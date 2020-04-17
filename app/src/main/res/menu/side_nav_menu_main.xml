@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/side_nav_unarchive"
+            android:icon="@drawable/ic_unarchive_black_24dp"
+            android:title="@string/unarchive" />
+
+        <item
+            android:id="@+id/sied_nav_setting"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/setting" />
+
+        <item
+            android:id="@+id/side_nav_exit"
+            android:icon="@drawable/ic_exit_black_24dp"
+            android:title="@string/exit" />
+
+    </group>
+</menu>

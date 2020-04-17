@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tool:context=".ActivityAddEditKey">
+
+    <EditText
+        android:id="@+id/key_EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:autofillHints="@string/comment"
+        android:ems="10"
+        android:hint="@string/comment"
+        android:inputType="textMultiLine"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:text="于密钥关于密钥关于密钥关于密钥关于密钥关于密钥关于密钥关于密钥" />
+
+    <Button
+        android:id="@+id/btn_key_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/tap2change"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_keygen"
+        app:layout_constraintTop_toBottomOf="@id/key_EditText" />
+
+    <Button
+        android:id="@+id/btn_keygen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/generate_key"
+        app:layout_constraintBaseline_toBaselineOf="@id/btn_key_type"
+        app:layout_constraintLeft_toRightOf="@id/btn_key_type"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <EditText
+        android:id="@+id/pri_key_EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:autofillHints="@string/private_key"
+        android:ems="10"
+        android:hint="@string/private_key"
+        android:inputType="textMultiLine"
+        app:layout_constraintTop_toBottomOf="@id/btn_keygen" />
+
+    <EditText
+        android:id="@+id/pub_key_EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:autofillHints="@string/public_key"
+        android:ems="10"
+        android:hint="@string/public_key"
+        android:inputType="textMultiLine"
+        app:layout_constraintTop_toBottomOf="@id/pri_key_EditText" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

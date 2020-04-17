@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <EditText
+        android:id="@+id/editText_function"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:ignore="Autofill,LabelFor" />
+
+    <Button
+        android:id="@+id/btn_base64_enc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/base64_enc"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_base64_dec"
+        app:layout_constraintTop_toBottomOf="@id/editText_function" />
+
+    <Button
+        android:id="@+id/btn_base64_dec"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/base64_dec"
+        app:layout_constraintLeft_toRightOf="@id/btn_base64_enc"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editText_function" />
+
+    <Button
+        android:id="@+id/btn_ECC_enc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/ECC_enc"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_ECC_dec"
+        app:layout_constraintTop_toBottomOf="@id/btn_base64_enc" />
+
+    <Button
+        android:id="@+id/btn_ECC_dec"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/ECC_dec"
+        app:layout_constraintLeft_toRightOf="@id/btn_ECC_enc"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_base64_dec" />
+
+    <TextView
+        android:id="@+id/textView_function"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_ECC_dec" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

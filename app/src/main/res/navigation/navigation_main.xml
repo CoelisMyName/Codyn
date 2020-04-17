@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main"
+    app:startDestination="@+id/bottom_nav_function">
+
+    <fragment
+        android:id="@+id/bottom_nav_function"
+        android:name="com.coel.codyn.fragment.function.FragmentFunction"
+        android:label="@string/encode"
+        tools:layout="@layout/fragment_function" />
+
+    <fragment
+        android:id="@+id/bottom_nav_key"
+        android:name="com.coel.codyn.fragment.key.FragmentKey"
+        android:label="@string/key"
+        tools:layout="@layout/fragment_key" />
+
+</navigation>

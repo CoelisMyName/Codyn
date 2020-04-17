@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:descendantFocusability="afterDescendants"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="25dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tool="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/text_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="aidniusndisisdinuaidniusndisisdinuaidniusndisisdinuaidniusndisisdinuaidniusndisisdinuaidniusndisisdinuaidniusndisisdinu"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tool:text="密钥说明" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_key_black_24dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_comment" />
+
+        <TextView
+            android:id="@+id/text_key_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@id/icon_key"
+            app:layout_constraintLeft_toRightOf="@id/icon_key"
+            app:layout_constraintTop_toBottomOf="@id/text_comment"
+            tool:text="@string/ECC" />
+
+        <TextView
+            android:id="@+id/text_private_key_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/private_key"
+            app:layout_constraintBaseline_toBaselineOf="@id/text_private_key"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:id="@+id/text_private_key"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:padding="5dp"
+            app:layout_constraintLeft_toLeftOf="@id/text_key_type"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_key_type"
+            tool:text="nvNIINniuNIiunFdfhftjyNNIiuNIiunFdfhftjyNNIINNI==+/" />
+
+        <TextView
+            android:id="@+id/text_public_key_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/public_key"
+            app:layout_constraintBaseline_toBaselineOf="@id/text_public_key"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:id="@+id/text_public_key"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:padding="5dp"
+            app:layout_constraintLeft_toLeftOf="@id/text_private_key"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_private_key"
+            tool:text="nvNIINniuNIiunFdfhftjyNNINIINniuNIiunFdfhftjyNNIINNI==+/" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

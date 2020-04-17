@@ -1,0 +1,2 @@
+rootProject.name='Codyn'
+include ':app'
