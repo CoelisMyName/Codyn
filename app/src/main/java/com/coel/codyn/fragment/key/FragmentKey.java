@@ -1,11 +1,13 @@
 package com.coel.codyn.fragment.key;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.coel.codyn.ActivityAddEditKey;
-import com.coel.codyn.ActivityMain;
 import com.coel.codyn.R;
 import com.coel.codyn.appUtil.SystemUtil;
 import com.coel.codyn.main.Info;
@@ -29,6 +30,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class FragmentKey extends Fragment {
+    public static final int ADD_KEY_REQUEST = 1;
+    public static final int EDIT_KEY_REQUEST = 2;
     private KeyVM keyVM;
     private MainVM mainVM;
 
@@ -47,7 +50,7 @@ public class FragmentKey extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivityForResult(
-                        new Intent(getActivity(), ActivityAddEditKey.class), ActivityMain.ADD_KEY_REQUEST);
+                        new Intent(getActivity(), ActivityAddEditKey.class), ADD_KEY_REQUEST);
             }
         });
 
@@ -97,6 +100,55 @@ public class FragmentKey extends Fragment {
             }
         });
         return root;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ADD_KEY_REQUEST && resultCode == Activity.RESULT_OK) {
+            if (data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1) == -1) {
+                Toast.makeText(getContext(), "Could not create new key! Error!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            //从data获得值
+            Key key = new Key(keyVM.getUser_id(),
+                    data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1),
+                    data.getStringExtra(ActivityAddEditKey.EXTRA_KEY_COMMENT),
+                    data.getStringExtra(ActivityAddEditKey.EXTRA_PRIVATE_KEY),
+                    data.getStringExtra(ActivityAddEditKey.EXTRA_PUBLIC_KEY));
+
+            //插入新钥匙
+            keyVM.insertKey(key);
+            Log.d("DDAA", "HERE");
+            Toast.makeText(getContext(), "Key saved!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (requestCode == EDIT_KEY_REQUEST && resultCode == Activity.RESULT_OK) {
+            if (data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1) == -1 ||
+                    data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_ID, -1) == -1) {
+                Toast.makeText(getContext(), "Could not update! Error!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Key key = new Key(keyVM.getUser_id(),
+                    data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1),
+                    data.getStringExtra(ActivityAddEditKey.EXTRA_KEY_COMMENT),
+                    data.getStringExtra(ActivityAddEditKey.EXTRA_PRIVATE_KEY),
+                    data.getStringExtra(ActivityAddEditKey.EXTRA_PUBLIC_KEY));
+
+            key.setId(data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_ID, -1));
+
+            //更新钥匙
+            keyVM.updateKey(key);
+
+            Toast.makeText(getContext(), "Key saved!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Log.d("ERR", "requestCode: " + requestCode + " resultCode: " + resultCode);
     }
 
     private void startEditKeyAct(Key k) {

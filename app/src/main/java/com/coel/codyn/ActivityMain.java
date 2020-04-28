@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,7 +29,6 @@ import com.coel.codyn.cypherUtil.Coder;
 import com.coel.codyn.cypherUtil.KeyUtil;
 import com.coel.codyn.fragment.key.KeyVM;
 import com.coel.codyn.main.Info;
-import com.coel.codyn.room.Key;
 import com.coel.codyn.room.User;
 import com.coel.codyn.service.FileService;
 import com.coel.codyn.viewmodel.MainVM;
@@ -38,8 +36,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 public class ActivityMain extends AppCompatActivity {
-    public static final int ADD_KEY_REQUEST = 1;
-    public static final int EDIT_KEY_REQUEST = 2;
     public static final int LOGIN_REQUEST = 3;
 
     public static final String USER_ID = "com.coel.codyn.EXTRA_USER_ID";
@@ -168,48 +164,6 @@ public class ActivityMain extends AppCompatActivity {
             return;
         }
 
-        if (requestCode == ADD_KEY_REQUEST && resultCode == RESULT_OK) {
-            if (data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1) == -1) {
-                Toast.makeText(this, "Could not create new key! Error!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            //从data获得值
-            Key key = new Key(keyVM.getUser_id(),
-                    data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1),
-                    data.getStringExtra(ActivityAddEditKey.EXTRA_KEY_COMMENT),
-                    data.getStringExtra(ActivityAddEditKey.EXTRA_PRIVATE_KEY),
-                    data.getStringExtra(ActivityAddEditKey.EXTRA_PUBLIC_KEY));
-
-            //插入新钥匙
-            keyVM.insertKey(key);
-
-            Toast.makeText(this, "Key saved!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (requestCode == EDIT_KEY_REQUEST && resultCode == RESULT_OK) {
-            if (data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1) == -1 ||
-                    data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_ID, -1) == -1) {
-                Toast.makeText(this, "Could not update! Error!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Key key = new Key(keyVM.getUser_id(),
-                    data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1),
-                    data.getStringExtra(ActivityAddEditKey.EXTRA_KEY_COMMENT),
-                    data.getStringExtra(ActivityAddEditKey.EXTRA_PRIVATE_KEY),
-                    data.getStringExtra(ActivityAddEditKey.EXTRA_PUBLIC_KEY));
-
-            key.setId(data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_ID, -1));
-
-            //更新钥匙
-            keyVM.updateKey(key);
-
-            Toast.makeText(this, "Key saved!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Log.d("ERR", "UNKNOWN");
+        Log.d("ERR", "requestCode: " + requestCode + " resultCode: " + resultCode);
     }
 }

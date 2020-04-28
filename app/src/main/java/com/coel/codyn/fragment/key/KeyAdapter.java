@@ -42,8 +42,9 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
             holder.pub.setVisibility(View.GONE);
             holder.pri.setText(Key.SYMMETRIC_KEY_STR + ": " + pri);
         } else {
+            holder.pri.setText(Key.PRIVATE_KEY_STR + ": " + pri);
             holder.pub.setText(Key.PUBLIC_KEY_STR + ": " + pub);
-            holder.pub.setText(Key.PRIVATE_KEY_STR + ": " + pri);
+
             if (pri == null || pri.length() == 0) {
                 holder.pri.setVisibility(View.GONE);
             }
