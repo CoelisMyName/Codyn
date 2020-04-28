@@ -45,18 +45,19 @@ public class CodynRepository {
         return userDAO.find_all_users();
     }
 
+    //返回所有用户
+    public LiveData<List<User>> getAllUsersLD() {
+        return userDAO.find_all_usersLD();
+    }
+
     //从初始化表中查询
-    public LiveData<User> find_user(String name) {
-        //注释代码可能有不更新的问题
-        /*
-        List<User> users = allUsers.getValue();
-        for (User user : users){
-            if(user.getUser_name().equals(name))
-                return new MutableLiveData<User>(user);
-        }
-        return null;
-        */
-        return userDAO.find_user(name);
+    public LiveData<User> find_userLD(String name) {
+        return userDAO.find_userLD(name);
+    }
+
+    //从初始化表中查询
+    public LiveData<User> find_userLD(int id) {
+        return userDAO.find_userLD(id);
     }
 
     //插入密钥

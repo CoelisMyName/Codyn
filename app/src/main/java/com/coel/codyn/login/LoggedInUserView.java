@@ -4,14 +4,14 @@ package com.coel.codyn.login;
  * Class exposing authenticated user details to the UI.
  */
 public class LoggedInUserView {
-    private String displayName;
+    private int uid;
     //... other data fields that may be accessible to the UI
 
-    public LoggedInUserView(String displayName) {
-        this.displayName = displayName;
+    public LoggedInUserView(int uid) {
+        this.uid = uid;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public int getUid() {
+        return uid;
     }
 }

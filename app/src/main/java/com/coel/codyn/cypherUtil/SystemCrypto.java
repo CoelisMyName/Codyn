@@ -1,12 +1,11 @@
 package com.coel.codyn.cypherUtil;
 
-import android.util.Log;
-
 import java.security.KeyStore;
 
 /*
 用于提供系统级加密，未来用于加密数据库内容
  */
+
 public class SystemCrypto {
     private final static String KEYSTORE_ALIAS = "KEYSTORE_DEMO";
     private static final String KEYSTORE_PROVIDER = "AndroidKeyStore";
@@ -19,7 +18,7 @@ public class SystemCrypto {
             mKeyStore = KeyStore.getInstance(KEYSTORE_PROVIDER);
             mKeyStore.load(null);
         } catch (Exception e) {
-            Log.d("SystemCrypto", "mKeyStore initial failed");
+            e.printStackTrace();
         }
     }
 

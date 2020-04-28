@@ -4,21 +4,41 @@ import androidx.annotation.NonNull;
 
 public class FunctionPad {
     @NonNull
-    private String outstr;
-
-    public FunctionPad(String s) {
-        outstr = s;
-    }
+    private static volatile String saveStr = "";
+    @NonNull
+    private byte[] bin;
+    @NonNull
+    private String outtxt;
 
     public FunctionPad() {
-        outstr = "";
+        bin = new byte[0];
+        outtxt = "";
     }
 
-    public String getOutstr() {
-        return outstr;
+    @NonNull
+    public static String getSaveStr() {
+        return saveStr;
     }
 
-    public void setOutstr(String s) {
-        outstr = s;
+    public static void setSaveStr(@NonNull String saveStr) {
+        FunctionPad.saveStr = saveStr;
+    }
+
+    @NonNull
+    public byte[] getBin() {
+        return bin;
+    }
+
+    public void setBin(@NonNull byte[] bin) {
+        this.bin = bin;
+    }
+
+    @NonNull
+    public String getOuttxt() {
+        return outtxt;
+    }
+
+    public void setOuttxt(@NonNull String outtxt) {
+        this.outtxt = outtxt;
     }
 }

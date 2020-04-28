@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    tool:ignore="HardcodedText"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
@@ -8,8 +10,7 @@
     app:cardCornerRadius="15dp"
     app:cardElevation="25dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tool="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp">
@@ -20,38 +21,21 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="aidniusndisisdinuaidniusndisisdinuaidniusndisisdinuaidniusndisisdinuaidniusndisisdinuaidniusndisisdinuaidniusndisisdinu"
+            android:padding="5dp"
+            android:text="密钥说明"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tool:text="密钥说明" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon_key"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_key_black_24dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_comment" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/text_key_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@id/icon_key"
-            app:layout_constraintLeft_toRightOf="@id/icon_key"
+            android:drawableEnd="@drawable/ic_key_black_24dp"
+            android:text="密钥类型"
             app:layout_constraintTop_toBottomOf="@id/text_comment"
-            tool:text="@string/ECC" />
-
-        <TextView
-            android:id="@+id/text_private_key_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/private_key"
-            app:layout_constraintBaseline_toBaselineOf="@id/text_private_key"
             app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
@@ -61,18 +45,10 @@
             android:clickable="true"
             android:ellipsize="end"
             android:maxLines="3"
-            android:padding="5dp"
-            app:layout_constraintLeft_toLeftOf="@id/text_key_type"
+            android:background="@drawable/border"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_key_type"
-            tool:text="nvNIINniuNIiunFdfhftjyNNIiuNIiunFdfhftjyNNIINNI==+/" />
-
-        <TextView
-            android:id="@+id/text_public_key_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/public_key"
-            app:layout_constraintBaseline_toBaselineOf="@id/text_public_key"
+            android:text="私钥 AAAAAAA"
             app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
@@ -81,12 +57,12 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:ellipsize="end"
-            android:maxLines="2"
-            android:padding="5dp"
-            app:layout_constraintLeft_toLeftOf="@id/text_private_key"
+            android:background="@drawable/border"
+            android:maxLines="3"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_private_key"
-            tool:text="nvNIINniuNIiunFdfhftjyNNINIINniuNIiunFdfhftjyNNIINNI==+/" />
+            android:text="公钥 AAAAAAA"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

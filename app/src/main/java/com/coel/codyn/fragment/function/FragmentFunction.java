@@ -1,30 +1,37 @@
 package com.coel.codyn.fragment.function;
 
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.coel.codyn.R;
+import com.coel.codyn.appUtil.SystemUtil;
+import com.coel.codyn.appUtil.ViewUtil;
 import com.coel.codyn.cypherUtil.Coder;
-import com.coel.codyn.cypherUtil.Crypto;
+import com.coel.codyn.cypherUtil.Hash;
+import com.coel.codyn.cypherUtil.crypto.AES;
+import com.coel.codyn.cypherUtil.crypto.ECC;
+import com.coel.codyn.cypherUtil.crypto.RSA;
+import com.coel.codyn.room.Key;
 import com.coel.codyn.viewmodel.MainVM;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Objects;
+
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class FragmentFunction extends Fragment {
     private static volatile String tempInStr;
@@ -36,7 +43,7 @@ public class FragmentFunction extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         functionVM = new ViewModelProvider(this).get(FunctionVM.class);//获得view model
-        mainVM = new ViewModelProvider(getActivity()).get(MainVM.class);
+        mainVM = new ViewModelProvider(Objects.requireNonNull(getActivity())).get(MainVM.class);
 
         View root = inflater.inflate(R.layout.fragment_function, container, false);//填充布局
 
@@ -47,183 +54,204 @@ public class FragmentFunction extends Fragment {
 
         final FunctionPadAdapter adapter = new FunctionPadAdapter();
         recyclerView.setAdapter(adapter);
-        adapter.setOnclick(new FunctionPadAdapter.Onclick() {
+        functionVM.getFunctionPad().observe(getViewLifecycleOwner(), new Observer<FunctionPad>() {
             @Override
-            public void onClickFunc(View v, String s, TextView textView) {
-                onClickInterface(v, s, textView);
+            public void onChanged(FunctionPad functionPad) {
+                adapter.setPad(functionPad);
+            }
+        });
+
+        adapter.setListener(new FunctionPadAdapter.PadListener() {
+            @Override
+            public void saveStr(String s) {
+                FunctionPad.setSaveStr(s);
+            }
+
+            @Override
+            public void clipBoard(String s) {
+                SystemUtil.setClipboard(getContext(), s);
+            }
+
+            @Override
+            public void base64Enc(String s) {
+                functionVM.updateOuttxt(Coder.Base64_encode2text(s.getBytes()));
+            }
+
+            @Override
+            public void base64Dec(String s) {
+                try {
+                    functionVM.updateOuttxt(Coder.Base64_decode2text(s));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ViewUtil.showToast(getContext(), "解码出错");
+                }
+            }
+
+            @Override
+            public void base64Dec2Reg(String s) {
+                try {
+                    functionVM.updateBin(Coder.Base64_decode2bin(s));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ViewUtil.showToast(getContext(), "解码出错");
+                }
+            }
+
+            @Override
+            public void sha256Txt(String s) {
+                functionVM.updateOuttxt(Coder.Base64_encode2text(Hash.sha256(s.getBytes())));
+            }
+
+            @Override
+            public void sha256Bin(byte[] bin) {
+                functionVM.updateOuttxt(Coder.Base64_encode2text(Hash.sha256(bin)));
+            }
+
+            @Override
+            public void encrypt(byte[] bin) {
+            }
+
+            @Override
+            public void decrypt(byte[] bin) {
             }
         });
 
         return root;
     }
 
-    public void onClickInterface(View v, String s, TextView textView) {
-        int attr;
-        switch (v.getId()) {
-            case R.id.btn_base64_enc:
-                textView.setText(Coder.Base64_encode2text(s.getBytes()));
-                break;
+    public class CryptoAtask extends AsyncTask<byte[], Void, String> {
+        public final static int ENCRYPT = 1;
+        public final static int DECRYPT = 2;
 
-            case R.id.btn_base64_dec:
-                if (!Coder.isBase64(s)) {
-                    Toast.makeText(getContext(), R.string.decode_error, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                textView.setText(Coder.Base64_decode2text(s));
-                break;
-            case R.id.btn_ECC_enc:
-                attr = mainVM.getKey_attr().getValue();
+        private final int MODE;
+        private final int TYPE;
+        private final int ATTR;
 
-                if (attr == MainVM.PUBLIC_KEY) {
-                    PublicKey publicKey = Crypto.ECC_public_key(Coder.Base64_decode2bin(mainVM.getKey().getValue()));
-                    if (publicKey != null) {
-                        new Atask_ECC_PUB(publicKey, textView, Atask_ECC_PUB.ENC_MODE).execute(s.getBytes());
-                    }
-                } else if (attr == MainVM.PRIVATE_KEY) {
-                    PrivateKey privateKey = Crypto.ECC_private_key(Coder.Base64_decode2bin(mainVM.getKey().getValue()));
-                    if (privateKey != null) {
-                        new Atask_ECC_PRI(privateKey, textView, Atask_ECC_PRI.DEC_MODE).execute(s.getBytes());
-                    }
-                }
-
-                break;
-            case R.id.btn_ECC_dec:
-                if (!Coder.isBase64(s)) {
-                    Toast.makeText(getContext(), R.string.decode_error, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                attr = mainVM.getKey_attr().getValue();
-                byte[] cyp = Coder.Base64_decode2bin(s);
-                if (attr == MainVM.PUBLIC_KEY) {
-                    PublicKey publicKey = Crypto.ECC_public_key(Coder.Base64_decode2bin(mainVM.getKey().getValue()));
-                    if (publicKey != null) {
-                        new Atask_ECC_PUB(publicKey, textView, Atask_ECC_PUB.DEC_MODE).execute(cyp);
-                    }
-                } else if (attr == MainVM.PRIVATE_KEY) {
-                    PrivateKey privateKey = Crypto.ECC_private_key(Coder.Base64_decode2bin(mainVM.getKey().getValue()));
-                    if (privateKey != null) {
-                        new Atask_ECC_PRI(privateKey, textView, Atask_ECC_PRI.DEC_MODE).execute(cyp);
-                    }
-                }
-
-                break;
-            case R.id.textView_function:
-                setClipboard(textView.getText().toString());
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void setClipboard(String str) {
-        ClipboardManager cm = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData mClipData = ClipData.newPlainText("Label", str);
-        assert cm != null;
-        cm.setPrimaryClip(mClipData);
-        Toast.makeText(getContext(), R.string.copy_success, Toast.LENGTH_SHORT).show();
-    }
-
-    public static class Atask_ECC_PUB extends AsyncTask<byte[], Void, String> {
-        public static final int ENC_MODE = 1;
-        public static final int DEC_MODE = 2;
-        private TextView txtv;
-        private int mode;
-        private PublicKey publicKey;
-
-        public Atask_ECC_PUB(PublicKey publicKey, TextView v, int mode) {
-            txtv = v;
-            this.mode = mode;
-            this.publicKey = publicKey;
+        public CryptoAtask(int mode, int key_type, int key_attr) {
+            MODE = mode;
+            TYPE = key_type;
+            ATTR = key_attr;
         }
 
         @Override
         protected void onPreExecute() {
-            if (mode == ENC_MODE)
-                txtv.setText("加密中");
-            else
-                txtv.setText("解密中");
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            txtv.setText(s);
+            super.onPreExecute();
+            functionVM.updateOuttxt("运算中");
         }
 
         @Override
         protected String doInBackground(byte[]... bytes) {
-            byte[] text = bytes[0];
-            byte[] cyph = null;
-            if (mode == ENC_MODE) {
-                cyph = Crypto.ECC_encrypt(publicKey, text);
-            } else if (mode == DEC_MODE) {
-                cyph = Crypto.ECC_decrypt(publicKey, text);
+            if (bytes.length < 2) {
+                Log.d(this.getClass().toString(), "argument less than 2");
+                return "错误";
+            }
+            byte[] key_bin = bytes[0], text = bytes[1], outcome = new byte[0];
+            String out = "未知模式";
+            try {
+                if (MODE == ENCRYPT) {
+                    switch (TYPE) {
+                        case Key.ECC_INT:
+                            if (ATTR == Key.PUBLIC_KEY) {
+                                PublicKey key = ECC.publicKey(key_bin);
+                                outcome = ECC.encrypt(key, text);
+                            }
+                            if (ATTR == Key.PRIVATE_KEY) {
+                                PrivateKey key = ECC.privateKey(key_bin);
+                                outcome = ECC.encrypt(key, text);
+                            }
+                            break;
+
+                        case Key.AES_INT:
+                            if (ATTR == Key.SYMMETRIC_KEY) {
+                                SecretKeySpec key = AES.keyDecode(key_bin);
+                                if (bytes.length == 2) {
+                                    outcome = AES.encrypt(key, text);
+                                } else {
+                                    outcome = AES.encrypt(key, text, new IvParameterSpec(bytes[2]));
+                                }
+                            }
+                            break;
+
+                        case Key.RSA_INT:
+                            if (ATTR == Key.PUBLIC_KEY) {
+                                PublicKey key = RSA.publicKey(key_bin);
+                                outcome = RSA.encrypt(key, text);
+                            }
+                            if (ATTR == Key.PRIVATE_KEY) {
+                                PrivateKey key = RSA.privateKey(key_bin);
+                                outcome = RSA.encrypt(key, text);
+                            }
+                            break;
+
+                        default:
+                            outcome = null;
+                    }
+
+                    if (outcome == null) {
+                        return "错误";
+                    } else {
+                        out = Coder.Base64_encode2text(outcome);
+                    }
+
+                }
+                if (MODE == DECRYPT) {
+                    switch (TYPE) {
+                        case Key.ECC_INT:
+                            if (ATTR == Key.PUBLIC_KEY) {
+                                PublicKey key = ECC.publicKey(key_bin);
+                                outcome = ECC.decrypt(key, text);
+                            }
+                            if (ATTR == Key.PRIVATE_KEY) {
+                                PrivateKey key = ECC.privateKey(key_bin);
+                                outcome = ECC.decrypt(key, text);
+                            }
+                            break;
+
+                        case Key.AES_INT:
+                            if (ATTR == Key.SYMMETRIC_KEY) {
+                                SecretKeySpec key = AES.keyDecode(key_bin);
+                                if (bytes.length == 2) {
+                                    outcome = AES.decrypt(key, text);
+                                } else {
+                                    outcome = AES.decrypt(key, text, new IvParameterSpec(bytes[2]));
+                                }
+                            }
+                            break;
+
+                        case Key.RSA_INT:
+                            if (ATTR == Key.PUBLIC_KEY) {
+                                PublicKey key = RSA.publicKey(key_bin);
+                                outcome = RSA.encrypt(key, text);
+                            }
+                            if (ATTR == Key.PRIVATE_KEY) {
+                                PrivateKey key = RSA.privateKey(key_bin);
+                                outcome = RSA.encrypt(key, text);
+                            }
+                            break;
+
+                        default:
+                            outcome = null;
+                    }
+
+                    if (outcome == null) {
+                        return "错误";
+                    } else {
+                        out = new String(outcome);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                ViewUtil.showToast(getContext(), "密码学错误");
+                return "错误";
             }
 
-            if (cyph == null) {
-                if (mode == ENC_MODE)
-                    return "加密错误";
-                else if (mode == DEC_MODE)
-                    return "解密错误";
-            }
-            if (mode == ENC_MODE)
-                return Coder.Base64_encode2text(cyph);
-            else if (mode == DEC_MODE)
-                return new String(cyph);
-            return "";
-
-        }
-    }
-
-    public static class Atask_ECC_PRI extends AsyncTask<byte[], Void, String> {
-        public static final int ENC_MODE = 1;
-        public static final int DEC_MODE = 2;
-        private TextView txtv;
-        private int mode;
-        private PrivateKey privateKey;
-
-        public Atask_ECC_PRI(PrivateKey privateKey, TextView v, int mode) {
-            txtv = v;
-            this.mode = mode;
-            this.privateKey = privateKey;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            if (mode == ENC_MODE)
-                txtv.setText("加密中");
-            else
-                txtv.setText("解密中");
+            return out;
         }
 
         @Override
         protected void onPostExecute(String s) {
-            txtv.setText(s);
-        }
-
-        @Override
-        protected String doInBackground(byte[]... bytes) {
-            byte[] text = bytes[0];
-            byte[] cyph = null;
-            if (mode == ENC_MODE) {
-                cyph = Crypto.ECC_encrypt(privateKey, text);
-            } else if (mode == DEC_MODE) {
-                cyph = Crypto.ECC_decrypt(privateKey, text);
-            }
-
-            if (cyph == null) {
-                if (mode == ENC_MODE)
-                    return "加密错误";
-                else if (mode == DEC_MODE)
-                    return "解密错误";
-            }
-
-            if (mode == ENC_MODE)
-                return Coder.Base64_encode2text(cyph);
-            else if (mode == DEC_MODE)
-                return new String(cyph);
-            return "";
+            super.onPostExecute(s);
+            functionVM.updateOuttxt(s);
         }
     }
-
 }

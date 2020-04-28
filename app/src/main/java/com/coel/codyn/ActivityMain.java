@@ -1,10 +1,14 @@
 package com.coel.codyn;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +25,14 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.coel.codyn.collector.ActivityCollector;
-import com.coel.codyn.cypherUtil.Function;
+import com.coel.codyn.appUtil.SystemUtil;
+import com.coel.codyn.cypherUtil.Coder;
+import com.coel.codyn.cypherUtil.KeyUtil;
 import com.coel.codyn.fragment.key.KeyVM;
+import com.coel.codyn.main.Info;
 import com.coel.codyn.room.Key;
 import com.coel.codyn.room.User;
+import com.coel.codyn.service.FileService;
 import com.coel.codyn.viewmodel.MainVM;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -34,16 +41,34 @@ public class ActivityMain extends AppCompatActivity {
     public static final int ADD_KEY_REQUEST = 1;
     public static final int EDIT_KEY_REQUEST = 2;
     public static final int LOGIN_REQUEST = 3;
-    public static final String USER_NAME = "com.coel.codyn.EXTRA_USER_NAME";
+
+    public static final String USER_ID = "com.coel.codyn.EXTRA_USER_ID";
+
     private MainVM mainVM;
     private KeyVM keyVM;
 
+    private View infoview;
     private TextView key_type;
     private TextView key;
     private TextView key_attr;
+
     private TextView user_name;
 
     private AppBarConfiguration NavCfg;//工具栏配置
+
+    private FileService.CryptoBinder binder;
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            binder = (FileService.CryptoBinder) service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            binder = null;
+        }
+    };
 
     //private Handler handler;//异步消息处理器
 
@@ -51,16 +76,18 @@ public class ActivityMain extends AppCompatActivity {
         return handler;
     }*/
 
+
     @Override //创建活动视图
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActivityCollector.addActivity(this);//向活动收集器添加活动
+
         setContentView(R.layout.activity_main);//设置布局样式
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);//获取工具栏
         setSupportActionBar(toolbar);//本活动设置工具栏
 
+        infoview = findViewById(R.id.layout_key_info_main_);
         key_type = findViewById(R.id.key_info_type);
         key = findViewById(R.id.key_info_key);
         key_attr = findViewById(R.id.key_info_attr);
@@ -68,7 +95,7 @@ public class ActivityMain extends AppCompatActivity {
         DrawerLayout drawer = findViewById(R.id.drawer_layout_main);//获得DrawerLayout实例
         NavigationView sideNavView = findViewById(R.id.side_nav_view_main);//获得侧边栏实例
         BottomNavigationView bottomNavView = findViewById(R.id.bottom_nav_view_main);//获得底部导航栏实例
-        user_name = sideNavView.findViewById(R.id.textView_user_name);
+        user_name = sideNavView.getHeaderView(0).findViewById(R.id.textView_user_name);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer,
                 toolbar, R.string.open, R.string.close);//侧边栏开关绑定在工具栏上（左侧三道杠）
@@ -82,33 +109,24 @@ public class ActivityMain extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNavView, NavController);//底部导航栏与nav fragment绑定
 
         mainVM = new ViewModelProvider(this).get(MainVM.class);
-        Log.d(this.getClass().toString(), "Create Main Activity View Success");
         keyVM = new ViewModelProvider(this).get(KeyVM.class);
 
-        mainVM.getKey_type().observe(this, new Observer<Integer>() {
-
+        //注册观察事件
+        mainVM.getInfo().observe(this, new Observer<Info>() {
             @Override
-            public void onChanged(Integer integer) {
-                key_type.setText(Function.key_type2Str(integer));
-            }
-        });
-
-        mainVM.getKey_attr().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                key_attr.setText(Function.key_attr2String(integer));
-            }
-        });
-
-        mainVM.getKey().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                key.setText(s);
+            public void onChanged(Info info) {
+                if (info.getTYPE() == Info.DEFAULT) {
+                    infoview.setVisibility(View.GONE);
+                } else {
+                    infoview.setVisibility(View.VISIBLE);
+                    key_type.setText(KeyUtil.type2Str(info.getTYPE()));
+                    key_attr.setText(KeyUtil.attrStr(info.getATTR()));
+                    key.setText(Coder.Base64_encode2text(info.getKey()));
+                }
             }
         });
 
         startActivityForResult(new Intent(this, ActivityLogin.class), LOGIN_REQUEST);
-        Log.d(this.getClass().toString(), "Start LoginActivity");
     }
 
     @Override
@@ -121,7 +139,7 @@ public class ActivityMain extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_scan:
-                Toast.makeText(this, "扫描二维码", Toast.LENGTH_SHORT).show();
+                SystemUtil.setClipboard(this, "扫描二维码");
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -132,33 +150,32 @@ public class ActivityMain extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         assert data != null;
         //登录初始化
-        if (requestCode == LOGIN_REQUEST && resultCode == RESULT_OK) {
-            //TODO 初始化
-            Log.d(this.getClass().toString(), "enter login");
-            mainVM.initialUser(data.getStringExtra(USER_NAME));
+        if (requestCode == LOGIN_REQUEST && resultCode == RESULT_OK && data.hasExtra(USER_ID)) {
+            int uid = data.getIntExtra(USER_ID, -1);
+            if (uid == -1) {
+                finish();
+            }
+            mainVM.initialUser(uid);
             mainVM.getUser().observe(this, new Observer<User>() {
                 @Override
                 public void onChanged(User user) {
                     if (user != null) {
-                        keyVM.setUser_id(user.getId());
-                        //                    user_name.setText(user.getUser_name());
+                        keyVM.setUserId(user.getId());
+                        user_name.setText(user.getUser_name());
                     }
                 }
             });
-            Log.d(this.getClass().toString(), "Main Activity Data Initial Success");
-        } else if (requestCode == LOGIN_REQUEST) {
-            Log.d(this.getClass().toString(), "enter cancel login");
-            //登录错误整个退出
-            finish();
-        } else if (requestCode == ADD_KEY_REQUEST && resultCode == RESULT_OK) {
-            Log.d(this.getClass().toString(), "enter add key");
+            return;
+        }
+
+        if (requestCode == ADD_KEY_REQUEST && resultCode == RESULT_OK) {
             if (data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1) == -1) {
                 Toast.makeText(this, "Could not create new key! Error!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             //从data获得值
-            Key key = new Key(mainVM.getUser().getValue().getId(),
+            Key key = new Key(keyVM.getUser_id(),
                     data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1),
                     data.getStringExtra(ActivityAddEditKey.EXTRA_KEY_COMMENT),
                     data.getStringExtra(ActivityAddEditKey.EXTRA_PRIVATE_KEY),
@@ -168,35 +185,31 @@ public class ActivityMain extends AppCompatActivity {
             keyVM.insertKey(key);
 
             Toast.makeText(this, "Key saved!", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == EDIT_KEY_REQUEST && resultCode == RESULT_OK) {
-            Log.d(this.getClass().toString(), "enter edit key");
+            return;
+        }
+
+        if (requestCode == EDIT_KEY_REQUEST && resultCode == RESULT_OK) {
             if (data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1) == -1 ||
                     data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_ID, -1) == -1) {
                 Toast.makeText(this, "Could not update! Error!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            Key key = new Key(mainVM.getUser().getValue().getId(),
+            Key key = new Key(keyVM.getUser_id(),
                     data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, -1),
                     data.getStringExtra(ActivityAddEditKey.EXTRA_KEY_COMMENT),
                     data.getStringExtra(ActivityAddEditKey.EXTRA_PRIVATE_KEY),
                     data.getStringExtra(ActivityAddEditKey.EXTRA_PUBLIC_KEY));
+
             key.setId(data.getIntExtra(ActivityAddEditKey.EXTRA_KEY_ID, -1));
 
             //更新钥匙
             keyVM.updateKey(key);
 
             Toast.makeText(this, "Key saved!", Toast.LENGTH_SHORT).show();
-
-        } else {
-            Toast.makeText(this, "Key not saved!", Toast.LENGTH_SHORT).show();
+            return;
         }
-        Log.d(this.getClass().toString(), "onActivityResult Success");
-    }
 
-    @Override
-    protected void onDestroy() {//摧毁活动
-        super.onDestroy();
-        ActivityCollector.removeActivity(this);//从活动收集器去除活动
+        Log.d("ERR", "UNKNOWN");
     }
 }

@@ -24,7 +24,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.coel.codyn.login.LoggedInUserView;
 import com.coel.codyn.login.LoginFormState;
 import com.coel.codyn.login.LoginResult;
+import com.coel.codyn.room.User;
 import com.coel.codyn.viewmodel.LoginVM;
+
+import java.util.List;
 
 public class ActivityLogin extends AppCompatActivity {
     private LoginVM loginVM;
@@ -43,6 +46,14 @@ public class ActivityLogin extends AppCompatActivity {
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+
+        loginVM.getUsersLD().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                //更新
+                loginVM.setUserList(users);
+            }
+        });
 
         loginVM.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
@@ -63,7 +74,6 @@ public class ActivityLogin extends AppCompatActivity {
         loginVM.getLoginResult().observe(this, new Observer<LoginResult>() {
             @Override
             public void onChanged(@Nullable LoginResult loginResult) {
-                Log.d("LG", "login onchange");
                 if (loginResult == null) {
                     Log.d("LG", "loginResult is null");
                     return;
@@ -77,7 +87,7 @@ public class ActivityLogin extends AppCompatActivity {
                     Log.d("LG", "loginResult is Success");
                     updateUiWithUser(loginResult.getSuccess());
                     Intent data = new Intent();
-                    data.putExtra(ActivityMain.USER_NAME, loginResult.getSuccess().getDisplayName());
+                    data.putExtra(ActivityMain.USER_ID, loginResult.getSuccess().getUid());
                     setResult(Activity.RESULT_OK, data);
                     finish();
                 }
@@ -109,6 +119,7 @@ public class ActivityLogin extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    loadingProgressBar.setVisibility(View.VISIBLE);
                     loginVM.login(usernameEditText.getText().toString(),
                             passwordEditText.getText().toString());
                     Log.d("LG", "press button");
@@ -129,7 +140,7 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
+        String welcome = getString(R.string.welcome);
         // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }

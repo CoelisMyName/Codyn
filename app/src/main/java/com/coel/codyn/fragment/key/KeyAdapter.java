@@ -3,13 +3,15 @@ package com.coel.codyn.fragment.key;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.coel.codyn.R;
+import com.coel.codyn.cypherUtil.Coder;
+import com.coel.codyn.cypherUtil.KeyUtil;
+import com.coel.codyn.main.Info;
 import com.coel.codyn.room.Key;
 
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import java.util.List;
 
 public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
     private List<Key> keys = new ArrayList<>();
-    private OnItemClickListener listener;
+    private KeyListListener listener;
 
 
     @NonNull
@@ -32,22 +34,23 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
     public void onBindViewHolder(@NonNull KeyHolder holder, int position) {
         Key currKey = keys.get(position);
         holder.comment.setText(currKey.getComment());
-        holder.type.setText(currKey.getKey_type());
+        holder.type.setText(KeyUtil.type2Str(currKey.getKey_type()));
+
         String pri = currKey.getPrivate_key();
         String pub = currKey.getPublic_key();
-        if (pri == null || pri.length() == 0) {
-            holder.pri.setVisibility(View.GONE);
-            holder.pri_key.setVisibility(View.GONE);
-        } else {
-            holder.pri_key.setText(pri);
-        }
-        if (pub == null || pub.length() == 0) {
+        if (KeyUtil.isSymmetric(currKey.getKey_type())) {
             holder.pub.setVisibility(View.GONE);
-            holder.pub_key.setVisibility(View.GONE);
+            holder.pri.setText(Key.SYMMETRIC_KEY_STR + ": " + pri);
         } else {
-            holder.pub_key.setText(pub);
+            holder.pub.setText(Key.PUBLIC_KEY_STR + ": " + pub);
+            holder.pub.setText(Key.PRIVATE_KEY_STR + ": " + pri);
+            if (pri == null || pri.length() == 0) {
+                holder.pri.setVisibility(View.GONE);
+            }
+            if (pub == null || pub.length() == 0) {
+                holder.pub.setVisibility(View.GONE);
+            }
         }
-
     }
 
     @Override
@@ -60,63 +63,90 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
         notifyDataSetChanged();
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setKeyListListener(KeyListListener listener) {
         this.listener = listener;
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(Key key);
+    //接口
+    public interface KeyListListener {
 
-        void onKeyClick(int type, String key);
+        void editKey(Key key);
+
+        void updateInfo(Info i);
+
+        void clipBoard(String key);
     }
 
     public class KeyHolder extends RecyclerView.ViewHolder {
         private TextView comment;
         private TextView type;
-        private ImageView image;
         private TextView pub;
         private TextView pri;
-        private TextView pub_key;
-        private TextView pri_key;
 
-        public KeyHolder(@NonNull View itemView) {
+        private KeyHolder(@NonNull View itemView) {
             super(itemView);
 
             comment = itemView.findViewById(R.id.text_comment);
             type = itemView.findViewById(R.id.text_key_type);
-            image = itemView.findViewById(R.id.icon_key);
-            pub = itemView.findViewById(R.id.text_public_key_tag);
-            pri = itemView.findViewById(R.id.text_private_key_tag);
-            pub_key = itemView.findViewById(R.id.text_public_key);
-            pri_key = itemView.findViewById(R.id.text_private_key);
+            pub = itemView.findViewById(R.id.text_public_key);
+            pri = itemView.findViewById(R.id.text_private_key);
+
+            //注册点击长按事件
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION)
-                        listener.onItemClick(keys.get(pos));
+                        listener.editKey(keys.get(pos));
                 }
             });
 
-            pub_key.setOnClickListener(new View.OnClickListener() {
+            pub.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = getAdapterPosition();
+                    if (listener != null && pos != RecyclerView.NO_POSITION) {
+                        listener.clipBoard(keys.get(pos).getPublic_key());
+                    }
+                    return true;
+                }
+            });
+
+            pub.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION) {
-                        listener.onKeyClick(keys.get(pos).getKey_type(),
-                                keys.get(pos).getPublic_key());
+                        Key key = keys.get(pos);
+                        Info info = new Info(key.getKey_type(), Key.PUBLIC_KEY,
+                                Coder.Base64_decode2bin(key.getPublic_key()));
+                        listener.updateInfo(info);
                     }
                 }
             });
 
-            pri_key.setOnClickListener(new View.OnClickListener() {
+            pri.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = getAdapterPosition();
+                    if (listener != null && pos != RecyclerView.NO_POSITION) {
+                        listener.clipBoard(keys.get(pos).getPrivate_key());
+                    }
+                    return true;
+                }
+            });
+
+            pri.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION) {
-                        listener.onKeyClick(keys.get(pos).getKey_type(),
-                                keys.get(pos).getPublic_key());
+                        Key key = keys.get(pos);
+                        Info info = new Info(key.getKey_type(),
+                                KeyUtil.isSymmetric(key.getKey_type()) ? Key.SYMMETRIC_KEY : Key.PRIVATE_KEY,
+                                Coder.Base64_decode2bin(key.getPrivate_key()));
+                        listener.updateInfo(info);
                     }
                 }
             });

@@ -19,12 +19,17 @@ public class KeyVM extends AndroidViewModel {
     public KeyVM(Application application) {
         super(application);
         repository = new CodynRepository(application);
+        user_id = -1;
         keys = new MutableLiveData<>();//初始化
     }
 
-    public void setUser_id(int i) {
+    public void setUserId(int i) {
         user_id = i;
         keys = repository.find_keys(user_id);
+    }
+
+    public int getUser_id() {
+        return user_id;
     }
 
     public LiveData<List<Key>> getKeys() {

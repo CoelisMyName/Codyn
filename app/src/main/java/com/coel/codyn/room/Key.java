@@ -19,9 +19,19 @@ public_key:text
         childColumns = "user_id", onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE),
         indices = {@Index(value = "id", unique = true), @Index(value = "user_id")})
 public class Key {
-    public static final int ECC = 0x100;
-    public static final int AES = 0x200;
-    public static final int RSA = 0x300;
+    public static final int ECC_INT = 0x100;
+    public static final int AES_INT = 0x200;
+    public static final int RSA_INT = 0x300;
+    public final static String ECC_STR = "ECC";
+    public final static String RSA_STR = "RSA";
+    public final static String AES_STR = "AES";
+
+    public static final int PUBLIC_KEY = 1;
+    public static final int PRIVATE_KEY = 2;
+    public static final int SYMMETRIC_KEY = 3;
+    public static final String PUBLIC_KEY_STR = "公钥";
+    public static final String PRIVATE_KEY_STR = "私钥";
+    public static final String SYMMETRIC_KEY_STR = "对称密钥";
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -45,7 +55,7 @@ public class Key {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUserId(int user_id) {
         this.user_id = user_id;
     }
 

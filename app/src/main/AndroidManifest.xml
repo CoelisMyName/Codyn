@@ -14,11 +14,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <!-- 文件加密服务 -->
+        <service
+            android:name=".service.FileService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <!-- 登录活动 -->
         <activity
             android:name=".ActivityLogin"
             android:label="@string/title_activity_login"
             android:parentActivityName=".ActivityMain" />
 
+        <!-- 主活动 -->
         <activity
             android:name=".ActivityMain"
             android:label="@string/app_name"
@@ -32,6 +40,7 @@
 
         </activity>
 
+        <!-- 编辑密钥活动 -->
         <activity
             android:name=".ActivityAddEditKey"
             android:parentActivityName=".ActivityMain" />

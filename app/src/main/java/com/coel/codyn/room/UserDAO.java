@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -14,11 +13,11 @@ import java.util.List;
 public interface UserDAO {
 
     //插入用户
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert
     void insert(User user);
 
     //更新用户
-    @Update(onConflict = OnConflictStrategy.ABORT)
+    @Update
     void update(User user);
 
     //删除用户
@@ -27,9 +26,15 @@ public interface UserDAO {
 
     //选取用户名对应的用户
     @Query("SELECT * FROM user_table WHERE user_name LIKE :name")
-    LiveData<User> find_user(String name);
+    LiveData<User> find_userLD(String name);
+
+    @Query("SELECT * FROM user_table WHERE id LIKE :id")
+    LiveData<User> find_userLD(int id);
 
     //选取所有用户
     @Query("SELECT * FROM user_table")
     List<User> find_all_users();
+
+    @Query("SELECT * FROM user_table")
+    LiveData<List<User>> find_all_usersLD();
 }

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.util.Patterns;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -23,7 +24,9 @@ import java.util.List;
 
 public class LoginVM extends AndroidViewModel {
     private CodynRepository repository;
+    @Nullable
     private List<User> userList;
+    private LiveData<List<User>> usersLD;
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
 
@@ -31,10 +34,16 @@ public class LoginVM extends AndroidViewModel {
         super(application);
 
         repository = new CodynRepository(application);
-        new Atask().execute();
-
+        usersLD = repository.getAllUsersLD();
         //new Atask().execute();
-        Log.d("LG", "Create VM");
+    }
+
+    public LiveData<List<User>> getUsersLD() {
+        return usersLD;
+    }
+
+    public void setUserList(@Nullable List<User> userList) {
+        this.userList = userList;
     }
 
     public LiveData<LoginFormState> getLoginFormState() {
@@ -48,16 +57,14 @@ public class LoginVM extends AndroidViewModel {
     public void login(String username, String password) {
         String phash = Coder.Base64_encode2text(Hash.sha256(password.getBytes()));
         if (userList == null) {
-            Log.d("LG", "users is null");
-            loginResult.setValue(new LoginResult(R.string.login_failed));
+            loginResult.setValue(new LoginResult(R.string.login_error));
             return;
         }
 
 
         for (User user : userList) {
             if (user.getUser_name().equals(username) && user.getPassword_hash().equals(phash)) {
-                loginResult.setValue(new LoginResult(new LoggedInUserView(username)));
-                Log.d("LG", "user match");
+                loginResult.setValue(new LoginResult(new LoggedInUserView(user.getId())));
                 return;
             }
         }

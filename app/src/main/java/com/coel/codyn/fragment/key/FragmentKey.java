@@ -19,11 +19,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.coel.codyn.ActivityAddEditKey;
 import com.coel.codyn.ActivityMain;
 import com.coel.codyn.R;
+import com.coel.codyn.appUtil.SystemUtil;
+import com.coel.codyn.main.Info;
 import com.coel.codyn.room.Key;
 import com.coel.codyn.viewmodel.MainVM;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+import java.util.Objects;
 
 public class FragmentKey extends Fragment {
     private KeyVM keyVM;
@@ -51,7 +54,7 @@ public class FragmentKey extends Fragment {
         final KeyAdapter adapter = new KeyAdapter();
         recyclerView.setAdapter(adapter);
 
-        keyVM = new ViewModelProvider(getActivity()).get(KeyVM.class);
+        keyVM = new ViewModelProvider(Objects.requireNonNull(getActivity())).get(KeyVM.class);
         mainVM = new ViewModelProvider(getActivity()).get(MainVM.class);
         keyVM.getKeys().observe(getViewLifecycleOwner(), new Observer<List<Key>>() {
             @Override
@@ -60,22 +63,20 @@ public class FragmentKey extends Fragment {
             }
         });
 
-        adapter.setOnItemClickListener(new KeyAdapter.OnItemClickListener() {
+        adapter.setKeyListListener(new KeyAdapter.KeyListListener() {
             @Override
-            public void onItemClick(Key key) {
-                Intent intent = new Intent(getContext(), ActivityAddEditKey.class);
-                intent.putExtra(ActivityAddEditKey.EXTRA_KEY_ID, key.getId());
-                intent.putExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, key.getKey_type());
-                intent.putExtra(ActivityAddEditKey.EXTRA_KEY_COMMENT, key.getComment());
-                intent.putExtra(ActivityAddEditKey.EXTRA_PUBLIC_KEY, key.getPublic_key());
-                intent.putExtra(ActivityAddEditKey.EXTRA_PRIVATE_KEY, key.getPrivate_key());
-                startActivityForResult(intent, ActivityMain.EDIT_KEY_REQUEST);
+            public void editKey(Key key) {
+                startEditKeyAct(key);
             }
 
             @Override
-            public void onKeyClick(int type, String key) {
-                mainVM.setKey_type(type);
-                mainVM.setKey(key);
+            public void updateInfo(Info i) {
+                mainVM.updateInfo(i);
+            }
+
+            @Override
+            public void clipBoard(String key) {
+                SystemUtil.setClipboard(getContext(), key);
             }
         });
 
@@ -98,4 +99,7 @@ public class FragmentKey extends Fragment {
         return root;
     }
 
+    private void startEditKeyAct(Key k) {
+
+    }
 }

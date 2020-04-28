@@ -1,67 +1,229 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:orientation="vertical"
+    tool:ignore="HardcodedText">
 
-    <EditText
-        android:id="@+id/editText_function"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        app:layout_constraintTop_toTopOf="parent"
-        tool:ignore="Autofill,LabelFor" />
-
-    <Button
-        android:id="@+id/btn_base64_enc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/base64_enc"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btn_base64_dec"
-        app:layout_constraintTop_toBottomOf="@id/editText_function" />
-
-    <Button
-        android:id="@+id/btn_base64_dec"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/base64_dec"
-        app:layout_constraintLeft_toRightOf="@id/btn_base64_enc"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editText_function" />
-
-    <Button
-        android:id="@+id/btn_ECC_enc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/ECC_enc"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btn_ECC_dec"
-        app:layout_constraintTop_toBottomOf="@id/btn_base64_enc" />
-
-    <Button
-        android:id="@+id/btn_ECC_dec"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/ECC_dec"
-        app:layout_constraintLeft_toRightOf="@id/btn_ECC_enc"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_base64_dec" />
-
-    <TextView
-        android:id="@+id/textView_function"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_ECC_dec" />
+        android:layout_margin="5dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="25dp">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="输入框"
+                app:layout_constraintTop_toTopOf="parent"
+                tool:ignore="Autofill,LabelFor" />
+
+            <TextView
+                android:id="@+id/tag_base64"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Base64"
+                app:layout_constraintTop_toBottomOf="@id/editText" />
+
+            <Button
+                android:id="@+id/btn_base64_enc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/encode"
+                app:layout_constraintHorizontal_weight="2"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/btn_base64_dec"
+                app:layout_constraintTop_toBottomOf="@id/tag_base64" />
+
+            <Button
+                android:id="@+id/btn_base64_dec"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/decode"
+                app:layout_constraintHorizontal_weight="2"
+                app:layout_constraintLeft_toRightOf="@id/btn_base64_enc"
+                app:layout_constraintRight_toLeftOf="@id/btn_base64_dec2reg"
+                app:layout_constraintTop_toBottomOf="@id/tag_base64" />
+
+            <Button
+                android:id="@+id/btn_base64_dec2reg"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="解码至寄存"
+                app:layout_constraintHorizontal_weight="5"
+                app:layout_constraintLeft_toRightOf="@id/btn_base64_dec"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tag_base64" />
+
+            <TextView
+                android:id="@+id/tag_hash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="摘要"
+                app:layout_constraintTop_toBottomOf="@id/btn_base64_enc" />
+
+            <Button
+                android:id="@+id/btn_txt_sha256"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/SHA256"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tag_hash" />
+
+            <TextView
+                android:id="@+id/tag_crypto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="密码学"
+                app:layout_constraintTop_toBottomOf="@id/btn_txt_sha256" />
+
+            <Button
+                android:id="@+id/btn_txt_enc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/encrypt"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/btn_txt_dec"
+                app:layout_constraintTop_toBottomOf="@id/tag_crypto" />
+
+            <Button
+                android:id="@+id/btn_txt_dec"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/decrypt"
+                app:layout_constraintLeft_toRightOf="@id/btn_txt_enc"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tag_crypto" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_reg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:visibility="visible"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="25dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tag_reg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="寄存器"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txt_reg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:clickable="true"
+                android:text="二进制16进制内容二进制16进制内容二进制16进制内容二进制16进制内容二进制16进制内容"
+                android:textSize="5sp"
+                app:layout_constraintTop_toBottomOf="@id/tag_reg"
+                tool:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/tag_bin_hash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="摘要"
+                app:layout_constraintTop_toBottomOf="@id/txt_reg" />
+
+            <Button
+                android:id="@+id/btn_bin_sha256"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/SHA256"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tag_bin_hash" />
+
+            <TextView
+                android:id="@+id/tag_bin_crypto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="密码学"
+                app:layout_constraintTop_toBottomOf="@id/btn_bin_sha256" />
+
+            <Button
+                android:id="@+id/btn_bin_enc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/encrypt"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/btn_bin_dec"
+                app:layout_constraintTop_toBottomOf="@id/tag_bin_crypto" />
+
+            <Button
+                android:id="@+id/btn_bin_dec"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/decrypt"
+                app:layout_constraintLeft_toRightOf="@id/btn_bin_enc"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tag_bin_crypto" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_out"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="25dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="输出" />
+
+            <TextView
+                android:id="@+id/txt_out"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:clickable="true"
+                tool:text="输出base64输出base64输出base64输出base64输出base64输出base64" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
