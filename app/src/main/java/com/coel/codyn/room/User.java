@@ -1,8 +1,11 @@
 package com.coel.codyn.room;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+
+import org.jetbrains.annotations.NotNull;
 
 /*
 
@@ -20,14 +23,16 @@ public class User {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @NonNull
     private String user_name;//用户名
 
+    @NonNull
     private String password_hash;
 
     public User() {
     }
 
-    public User(String name, String password_hash) {
+    public User(@NotNull String name, @NotNull String password_hash) {
         this.user_name = name;
         this.password_hash = password_hash;
     }
@@ -40,19 +45,21 @@ public class User {
         this.id = id;
     }
 
+    @NotNull
     public String getUser_name() {
         return user_name;
     }
 
-    public void setUser_name(String name) {
+    public void setUser_name(@NotNull String name) {
         this.user_name = name;
     }
 
+    @NotNull
     public String getPassword_hash() {
         return password_hash;
     }
 
-    public void setPassword_hash(String password_hash) {
+    public void setPassword_hash(@NotNull String password_hash) {
         this.password_hash = password_hash;
     }
 }

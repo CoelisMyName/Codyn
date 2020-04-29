@@ -1,9 +1,12 @@
 package com.coel.codyn.room;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+
+import org.jetbrains.annotations.NotNull;
 
 /*
 
@@ -36,14 +39,19 @@ public class Key {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @NonNull
     private int user_id;
 
+    @NonNull
     private int key_type;
+    @NonNull
     private String comment;
+    @NonNull
     private String private_key;
+    @NonNull
     private String public_key;
 
-    public Key(int user_id, int key_type, String comment, String private_key, String public_key) {
+    public Key(int user_id, int key_type, @NotNull String comment, @NotNull String private_key, @NotNull String public_key) {
         this.user_id = user_id;
         this.key_type = key_type;
         this.comment = comment;
@@ -75,27 +83,30 @@ public class Key {
         this.key_type = key_type;
     }
 
+    @NotNull
     public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public void setComment(@NotNull String comment) {
         this.comment = comment;
     }
 
+    @NotNull
     public String getPrivate_key() {
         return private_key;
     }
 
-    public void setPrivate_key(String private_key) {
+    public void setPrivate_key(@NotNull String private_key) {
         this.private_key = private_key;
     }
 
+    @NotNull
     public String getPublic_key() {
         return public_key;
     }
 
-    public void setPublic_key(String public_key) {
+    public void setPublic_key(@NotNull String public_key) {
         this.public_key = public_key;
     }
 
