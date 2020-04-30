@@ -12,11 +12,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.coel.codyn.R;
-import com.coel.codyn.cypherUtil.Coder;
-import com.coel.codyn.cypherUtil.Hash;
-import com.coel.codyn.login.LoggedInUserView;
-import com.coel.codyn.login.LoginFormState;
-import com.coel.codyn.login.LoginResult;
+import com.coel.codyn.activitydata.login.LoggedInUserView;
+import com.coel.codyn.activitydata.login.LoginFormState;
+import com.coel.codyn.activitydata.login.LoginResult;
+import com.coel.codyn.appUtil.cypherUtil.Coder;
+import com.coel.codyn.appUtil.cypherUtil.Hash;
 import com.coel.codyn.repository.CodynRepository;
 import com.coel.codyn.room.User;
 

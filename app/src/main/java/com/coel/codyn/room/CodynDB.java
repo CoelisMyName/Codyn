@@ -10,8 +10,8 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.coel.codyn.cypherUtil.Coder;
-import com.coel.codyn.cypherUtil.Hash;
+import com.coel.codyn.appUtil.cypherUtil.Coder;
+import com.coel.codyn.appUtil.cypherUtil.Hash;
 
 import org.jetbrains.annotations.NotNull;
 

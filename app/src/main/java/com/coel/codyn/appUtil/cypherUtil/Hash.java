@@ -1,4 +1,4 @@
-package com.coel.codyn.cypherUtil;
+package com.coel.codyn.appUtil.cypherUtil;
 
 /*
 所有用到Hash哈希摘要函数都在这里

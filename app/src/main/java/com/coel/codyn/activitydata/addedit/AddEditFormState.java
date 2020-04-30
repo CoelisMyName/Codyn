@@ -1,4 +1,4 @@
-package com.coel.codyn.addedit;
+package com.coel.codyn.activitydata.addedit;
 
 import androidx.annotation.Nullable;
 

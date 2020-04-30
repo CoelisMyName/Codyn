@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-
     <application
         android:name=".CodynApplication"
         android:allowBackup="false"
@@ -21,9 +20,10 @@
 
         <!-- 文件加密服务 -->
         <service
-            android:name=".service.FileService"
+            android:name=".FileService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:permission=".CRYPTO_FILE" />
 
         <!-- 登录活动 -->
         <activity

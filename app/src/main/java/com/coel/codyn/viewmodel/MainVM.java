@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.coel.codyn.main.Info;
+import com.coel.codyn.activitydata.main.Info;
 import com.coel.codyn.repository.CodynRepository;
 import com.coel.codyn.room.User;
 

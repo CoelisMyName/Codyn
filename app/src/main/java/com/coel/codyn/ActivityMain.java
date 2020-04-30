@@ -24,13 +24,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.coel.codyn.activitydata.main.Info;
 import com.coel.codyn.appUtil.SystemUtil;
-import com.coel.codyn.cypherUtil.Coder;
-import com.coel.codyn.cypherUtil.KeyUtil;
+import com.coel.codyn.appUtil.cypherUtil.Coder;
+import com.coel.codyn.appUtil.cypherUtil.KeyUtil;
 import com.coel.codyn.fragment.key.KeyVM;
-import com.coel.codyn.main.Info;
 import com.coel.codyn.room.User;
-import com.coel.codyn.service.FileService;
 import com.coel.codyn.viewmodel.MainVM;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;

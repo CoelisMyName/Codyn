@@ -1,4 +1,4 @@
-package com.coel.codyn.cypherUtil;
+package com.coel.codyn.appUtil.cypherUtil;
 
 import java.security.KeyStore;
 

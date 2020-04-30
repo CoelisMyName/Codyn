@@ -1,4 +1,4 @@
-package com.coel.codyn.cypherUtil.crypto;
+package com.coel.codyn.appUtil.cypherUtil.crypto;
 
 import java.security.SecureRandom;
 

@@ -21,9 +21,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.coel.codyn.login.LoggedInUserView;
-import com.coel.codyn.login.LoginFormState;
-import com.coel.codyn.login.LoginResult;
+import com.coel.codyn.activitydata.login.LoggedInUserView;
+import com.coel.codyn.activitydata.login.LoginFormState;
+import com.coel.codyn.activitydata.login.LoginResult;
 import com.coel.codyn.room.User;
 import com.coel.codyn.viewmodel.LoginVM;
 

@@ -1,4 +1,4 @@
-package com.coel.codyn.main;
+package com.coel.codyn.activitydata.main;
 
 import androidx.annotation.NonNull;
 

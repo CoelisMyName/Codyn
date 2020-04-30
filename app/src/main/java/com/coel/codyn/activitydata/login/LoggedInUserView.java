@@ -1,4 +1,4 @@
-package com.coel.codyn.login;
+package com.coel.codyn.activitydata.login;
 
 /**
  * Class exposing authenticated user details to the UI.

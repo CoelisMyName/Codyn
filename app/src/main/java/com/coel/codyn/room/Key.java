@@ -39,10 +39,8 @@ public class Key {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @NonNull
     private int user_id;
 
-    @NonNull
     private int key_type;
     @NonNull
     private String comment;

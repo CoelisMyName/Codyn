@@ -9,9 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.coel.codyn.R;
-import com.coel.codyn.cypherUtil.Coder;
-import com.coel.codyn.cypherUtil.KeyUtil;
-import com.coel.codyn.main.Info;
+import com.coel.codyn.activitydata.main.Info;
+import com.coel.codyn.appUtil.cypherUtil.Coder;
+import com.coel.codyn.appUtil.cypherUtil.KeyUtil;
 import com.coel.codyn.room.Key;
 
 import java.util.ArrayList;
