@@ -1,6 +1,6 @@
 package com.coel.codyn.service;
 
-public interface FileView {
+public interface WorkView {
 
     String getSource();
 

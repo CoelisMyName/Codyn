@@ -1,6 +1,6 @@
 package com.coel.codyn.service;
 
-public interface FileWork {
+public interface WorkControl {
 
     void workPause();
 

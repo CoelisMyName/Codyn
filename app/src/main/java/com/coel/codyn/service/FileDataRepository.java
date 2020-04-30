@@ -12,11 +12,11 @@ public class FileDataRepository {
     private static int taskCount = 0;
     private static FileDataRepository fileDataRepository;
     @NonNull
-    private List<FileView> list;
+    private List<WorkView> list;
     @NonNull
-    private MutableLiveData<List<FileView>> listvm;
+    private MutableLiveData<List<WorkView>> listvm;
     @NonNull
-    private List<FileView> finishlist;
+    private List<WorkView> finishlist;
 
     private FileDataRepository() {
         listvm = new MutableLiveData<>(new Vector<>(20));
@@ -31,7 +31,7 @@ public class FileDataRepository {
     }
 
     public int getAllSize() {
-        List<FileView> temp = listvm.getValue();
+        List<WorkView> temp = listvm.getValue();
         assert temp != null;
         return temp.size();
     }
@@ -40,8 +40,8 @@ public class FileDataRepository {
         return finishlist.size();
     }
 
-    public boolean append(FileView data) {
-        List<FileView> temp = listvm.getValue();
+    public boolean append(WorkView data) {
+        List<WorkView> temp = listvm.getValue();
         assert temp != null;
         if (temp.add(data)) {
             listvm.setValue(temp);
@@ -49,7 +49,7 @@ public class FileDataRepository {
         return false;
     }
 
-    public LiveData<List<FileView>> getListvm() {
+    public LiveData<List<WorkView>> getListvm() {
         return listvm;
     }
 
@@ -58,83 +58,8 @@ public class FileDataRepository {
         listvm.setValue(listvm.getValue());
     }
 
-    public void done(FileView data) {
+    public void done(WorkView data) {
         finishlist.add(data);
     }
 
-    private class FileThread extends Thread implements FileView {
-        public final static int MAX = 10000;
-        private volatile boolean isPause = false;
-        private volatile boolean isCancel = false;
-        private volatile int progress = 0;
-
-        public FileThread() {
-        }
-
-        public void pauseProgress() {
-            isPause = true;
-        }
-
-        public void resumeProgress() {
-            isPause = false;
-            notify();
-        }
-
-        public void cancelProgress() {
-            isCancel = true;
-        }
-
-        @Override
-        public void run() {
-            while (!isCancel) {
-
-                if (isPause) {
-                    try {
-                        wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        if (isCancel)
-                            break;
-                    }
-                }
-
-                //TODO 做事情
-            }
-        }
-
-        @Override
-        public String getSource() {
-            return null;
-        }
-
-        @Override
-        public String getDest() {
-            return null;
-        }
-
-        @Override
-        public byte[] getKey() {
-            return new byte[0];
-        }
-
-        @Override
-        public int getMode() {
-            return 0;
-        }
-
-        @Override
-        public int getType() {
-            return 0;
-        }
-
-        @Override
-        public int getAttr() {
-            return 0;
-        }
-
-        @Override
-        public int getProgress() {
-            return 0;
-        }
-    }
 }
