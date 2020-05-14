@@ -14,6 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.coel.codyn.R;
+import com.coel.codyn.appUtil.cypherUtil.Coder;
 
 import org.spongycastle.util.encoders.Hex;
 
@@ -21,6 +22,7 @@ public class FunctionPadAdapter extends RecyclerView.Adapter<FunctionPadAdapter.
     private FunctionPad pad;
     private PadListener listener;
 
+    //设置监听接口
     void setListener(PadListener listener) {
         this.listener = listener;
     }
@@ -43,6 +45,7 @@ public class FunctionPadAdapter extends RecyclerView.Adapter<FunctionPadAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.binreg.setText(new String(Hex.encode(pad.getBin())));
+        //编辑框监听
         holder.editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -56,6 +59,7 @@ public class FunctionPadAdapter extends RecyclerView.Adapter<FunctionPadAdapter.
 
             @Override
             public void afterTextChanged(Editable s) {
+                //保存输入框文本
                 if (listener != null)
                     listener.saveStr(s.toString());
             }
@@ -168,7 +172,7 @@ public class FunctionPadAdapter extends RecyclerView.Adapter<FunctionPadAdapter.
                         break;
 
                     case R.id.btn_txt_dec:
-                        listener.decrypt(getText().getBytes());
+                        listener.decrypt(Coder.Base64_decode2bin(getText()));
                         break;
 
                     case R.id.btn_bin_sha256:

@@ -57,7 +57,7 @@ public class FragmentKey extends Fragment {
         final KeyAdapter adapter = new KeyAdapter();
         recyclerView.setAdapter(adapter);
 
-        keyVM = new ViewModelProvider(Objects.requireNonNull(getActivity())).get(KeyVM.class);
+        keyVM = new ViewModelProvider(requireActivity()).get(KeyVM.class);
         mainVM = new ViewModelProvider(getActivity()).get(MainVM.class);
         keyVM.getKeys().observe(getViewLifecycleOwner(), new Observer<List<Key>>() {
             @Override
@@ -96,7 +96,7 @@ public class FragmentKey extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
+                viewHolder.getAdapterPosition();
             }
         });
         return root;

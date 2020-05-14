@@ -1,6 +1,7 @@
 package com.coel.codyn.appUtil.cypherUtil.crypto;
 
 import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.spongycastle.jcajce.provider.asymmetric.ec.IESCipher;
 
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -14,6 +15,8 @@ import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
 
+
+//bouncy只支持私钥解密，公钥加密
 public class ECC {
     private static final String ALGORITHM = "ECIES";
     private static final String FACTORY = "EC";

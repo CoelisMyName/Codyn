@@ -141,10 +141,9 @@
                 android:id="@+id/txt_reg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border"
                 android:clickable="true"
                 android:text="二进制16进制内容二进制16进制内容二进制16进制内容二进制16进制内容二进制16进制内容"
-                android:textSize="5sp"
+                android:textSize="10sp"
                 app:layout_constraintTop_toBottomOf="@id/tag_reg"
                 tool:ignore="SmallSp" />
 
@@ -218,7 +217,6 @@
                 android:id="@+id/txt_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border"
                 android:clickable="true"
                 tool:text="输出base64输出base64输出base64输出base64输出base64输出base64" />
 

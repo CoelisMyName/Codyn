@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.coel.codyn.R;
+import com.coel.codyn.activitydata.main.Info;
 import com.coel.codyn.appUtil.SystemUtil;
 import com.coel.codyn.appUtil.ViewUtil;
 import com.coel.codyn.appUtil.cypherUtil.Coder;
@@ -43,7 +44,7 @@ public class FragmentFunction extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         functionVM = new ViewModelProvider(this).get(FunctionVM.class);//获得view model
-        mainVM = new ViewModelProvider(Objects.requireNonNull(getActivity())).get(MainVM.class);
+        mainVM = new ViewModelProvider(requireActivity()).get(MainVM.class);
 
         View root = inflater.inflate(R.layout.fragment_function, container, false);//填充布局
 
@@ -51,6 +52,9 @@ public class FragmentFunction extends Fragment {
         RecyclerView recyclerView = root.findViewById(R.id.recycler_function);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setFocusableInTouchMode(false);
+        recyclerView.setFocusable(false);
+        recyclerView.setHasFixedSize(true);
 
         final FunctionPadAdapter adapter = new FunctionPadAdapter();
         recyclerView.setAdapter(adapter);
@@ -70,6 +74,7 @@ public class FragmentFunction extends Fragment {
             @Override
             public void clipBoard(String s) {
                 SystemUtil.setClipboard(getContext(), s);
+                ViewUtil.showToast(getContext(),"复制到剪贴板");
             }
 
             @Override
@@ -109,10 +114,20 @@ public class FragmentFunction extends Fragment {
 
             @Override
             public void encrypt(byte[] bin) {
+                Info ins = mainVM.getInfo().getValue();
+                if(ins.getATTR() != Info.DEFAULT){
+                    CryptoAtask task = new CryptoAtask(CryptoAtask.ENCRYPT, ins.getTYPE(),ins.getATTR());
+                    task.execute(ins.getKey(), bin);
+                }
             }
 
             @Override
             public void decrypt(byte[] bin) {
+                Info ins = mainVM.getInfo().getValue();
+                if(ins.getATTR() != Info.DEFAULT) {
+                    CryptoAtask task = new CryptoAtask(CryptoAtask.DECRYPT, ins.getTYPE(), ins.getATTR());
+                    task.execute(ins.getKey(), bin);
+                }
             }
         });
 
@@ -221,11 +236,11 @@ public class FragmentFunction extends Fragment {
                         case Key.RSA_INT:
                             if (ATTR == Key.PUBLIC_KEY) {
                                 PublicKey key = RSA.publicKey(key_bin);
-                                outcome = RSA.encrypt(key, text);
+                                outcome = RSA.decrypt(key, text);
                             }
                             if (ATTR == Key.PRIVATE_KEY) {
                                 PrivateKey key = RSA.privateKey(key_bin);
-                                outcome = RSA.encrypt(key, text);
+                                outcome = RSA.decrypt(key, text);
                             }
                             break;
 
@@ -241,8 +256,7 @@ public class FragmentFunction extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                ViewUtil.showToast(getContext(), "密码学错误");
-                return "错误";
+                return "密码学错误";
             }
 
             return out;
