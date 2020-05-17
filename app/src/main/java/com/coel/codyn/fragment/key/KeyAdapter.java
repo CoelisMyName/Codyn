@@ -59,6 +59,10 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
         return keys.size();
     }
 
+    public Key getKey(int i){
+        return keys.get(i);
+    }
+
     public void setKeys(List<Key> keys) {
         this.keys = keys;
         notifyDataSetChanged();

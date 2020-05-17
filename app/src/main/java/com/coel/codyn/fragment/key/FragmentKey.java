@@ -22,6 +22,7 @@ import com.coel.codyn.ActivityAddEditKey;
 import com.coel.codyn.R;
 import com.coel.codyn.activitydata.main.Info;
 import com.coel.codyn.appUtil.SystemUtil;
+import com.coel.codyn.appUtil.ViewUtil;
 import com.coel.codyn.room.Key;
 import com.coel.codyn.viewmodel.MainVM;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -96,9 +97,10 @@ public class FragmentKey extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                viewHolder.getAdapterPosition();
+                keyVM.deleteKey(adapter.getKey(viewHolder.getAdapterPosition()));
+                ViewUtil.showToast(getContext(),"Key Delete");
             }
-        });
+        }).attachToRecyclerView(recyclerView);
         return root;
     }
 

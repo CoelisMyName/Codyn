@@ -8,7 +8,7 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
-import com.coel.codyn.service.WorkView;
+import com.coel.codyn.service.TaskView;
 
 public class FileService extends Service {
     public final static int ERROR = -1;
@@ -59,17 +59,17 @@ public class FileService extends Service {
         }
 
         //暂停
-        public void pause(WorkView view) {
+        public void pause(TaskView view) {
 
         }
 
         //继续
-        public void resume(WorkView view) {
+        public void resume(TaskView view) {
 
         }
 
         //移除
-        public void remove(WorkView view) {
+        public void remove(TaskView view) {
 
         }
     }
