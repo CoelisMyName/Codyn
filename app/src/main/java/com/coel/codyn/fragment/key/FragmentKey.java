@@ -72,7 +72,7 @@ public class FragmentKey extends Fragment {
         keyVM.getKeys().observe(getViewLifecycleOwner(), new Observer<List<Key>>() {
             @Override
             public void onChanged(List<Key> keys) {
-                adapter.setKeys(keys);
+                adapter.submitList(keys);
             }
         });
 

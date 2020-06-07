@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.coel.codyn.R;
@@ -17,9 +19,29 @@ import com.coel.codyn.room.Key;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
-    private List<Key> keys = new ArrayList<>();
+public class KeyAdapter extends ListAdapter<Key,KeyAdapter.KeyHolder> {
+    //private List<Key> keys = new ArrayList<>();
     private KeyListListener listener;
+
+    private static final DiffUtil.ItemCallback<Key> DIFF_CALLBACK = new DiffUtil.ItemCallback<Key>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Key oldItem, @NonNull Key newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Key oldItem, @NonNull Key newItem) {
+            return oldItem.getComment().equals(newItem.getComment()) &&
+                    oldItem.getKey_type() == newItem.getKey_type() &&
+                    oldItem.getUser_id() == newItem.getUser_id() &&
+                    oldItem.getPrivate_key().equals(newItem.getPrivate_key()) &&
+                    oldItem.getPublic_key().equals(newItem.getPublic_key());
+        }
+    };
+
+    public KeyAdapter() {
+        super(DIFF_CALLBACK);
+    }
 
 
     @NonNull
@@ -32,7 +54,7 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull KeyHolder holder, int position) {
-        Key currKey = keys.get(position);
+        Key currKey = getItem(position);
         holder.comment.setText(currKey.getComment());
         holder.type.setText(KeyUtil.type2Str(currKey.getKey_type()));
 
@@ -54,18 +76,8 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return keys.size();
-    }
-
     public Key getKey(int i){
-        return keys.get(i);
-    }
-
-    public void setKeys(List<Key> keys) {
-        this.keys = keys;
-        notifyDataSetChanged();
+        return getItem(i);
     }
 
     public void setKeyListListener(KeyListListener listener) {
@@ -105,7 +117,7 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION)
-                        listener.editKey(keys.get(pos));
+                        listener.editKey(getItem(pos));
                 }
             });
 
@@ -115,7 +127,7 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION) {
                         //listener.clipBoard(keys.get(pos).getPublic_key());
-                        listener.popMenu(v,keys.get(pos).getKey_type(),Key.PUBLIC_KEY,keys.get(pos).getPublic_key());
+                        listener.popMenu(v,getItem(pos).getKey_type(),Key.PUBLIC_KEY,getItem(pos).getPublic_key());
                     }
                     return true;
                 }
@@ -126,7 +138,7 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION) {
-                        Key key = keys.get(pos);
+                        Key key = getItem(pos);
                         Info info = new Info(key.getKey_type(), Key.PUBLIC_KEY,
                                 Coder.Base64_decode2bin(key.getPublic_key()));
                         listener.updateInfo(info);
@@ -140,7 +152,7 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION) {
                         //listener.clipBoard(keys.get(pos).getPrivate_key());
-                        listener.popMenu(v,keys.get(pos).getKey_type(),Key.PRIVATE_KEY,keys.get(pos).getPrivate_key());
+                        listener.popMenu(v,getItem(pos).getKey_type(),Key.PRIVATE_KEY,getItem(pos).getPrivate_key());
                     }
                     return true;
                 }
@@ -151,7 +163,7 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION) {
-                        Key key = keys.get(pos);
+                        Key key = getItem(pos);
                         Info info = new Info(key.getKey_type(),
                                 KeyUtil.isSymmetric(key.getKey_type()) ? Key.SYMMETRIC_KEY : Key.PRIVATE_KEY,
                                 Coder.Base64_decode2bin(key.getPrivate_key()));
