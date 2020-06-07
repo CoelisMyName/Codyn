@@ -51,6 +51,7 @@
     <string name="function">功能</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_password_repeat">Password must be the same</string>
     <string name="login_failed">"Login failed"</string>
     <string name="login_error">Login Error</string>
     <string name="save">保存</string>
@@ -58,5 +59,7 @@
     <string name="comment">说明</string>
     <string name="generate_key">生成密钥</string>
     <string name="register">注册</string>
+    <string name="register_fail">注册失败</string>
+    <string name="register_success">注册成功</string>
 
 </resources>

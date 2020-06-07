@@ -1,6 +1,6 @@
 package com.coel.codyn.service;
 
-public interface TaskControl {
+public interface TaskControl extends Runnable{
 
     boolean taskPause();
 

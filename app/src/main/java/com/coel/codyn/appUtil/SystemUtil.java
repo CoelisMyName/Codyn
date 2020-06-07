@@ -3,6 +3,7 @@ package com.coel.codyn.appUtil;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Environment;
 
 public class SystemUtil {
     private static ClipboardManager cm;
@@ -13,5 +14,16 @@ public class SystemUtil {
         }
         ClipData mClipData = ClipData.newPlainText("Label", str);
         cm.setPrimaryClip(mClipData);
+    }
+
+    public String getExternalFilesDir(Context context) {
+        String path = "";
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            path = context.getExternalFilesDir(null).getPath();
+        } else {
+            path = context.getFilesDir().getPath();
+        }
+        return path;
     }
 }

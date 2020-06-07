@@ -45,10 +45,10 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
             holder.pri.setText(Key.PRIVATE_KEY_STR + ": " + pri);
             holder.pub.setText(Key.PUBLIC_KEY_STR + ": " + pub);
 
-            if (pri == null || pri.length() == 0) {
+            if (pri.length() == 0) {
                 holder.pri.setVisibility(View.GONE);
             }
-            if (pub == null || pub.length() == 0) {
+            if (pub.length() == 0) {
                 holder.pub.setVisibility(View.GONE);
             }
         }
@@ -80,6 +80,8 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
         void updateInfo(Info i);
 
         void clipBoard(String key);
+
+        void popMenu(View view, int t, int a,String k);
     }
 
     public class KeyHolder extends RecyclerView.ViewHolder {
@@ -112,7 +114,8 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
                 public boolean onLongClick(View v) {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION) {
-                        listener.clipBoard(keys.get(pos).getPublic_key());
+                        //listener.clipBoard(keys.get(pos).getPublic_key());
+                        listener.popMenu(v,keys.get(pos).getKey_type(),Key.PUBLIC_KEY,keys.get(pos).getPublic_key());
                     }
                     return true;
                 }
@@ -136,7 +139,8 @@ public class KeyAdapter extends RecyclerView.Adapter<KeyAdapter.KeyHolder> {
                 public boolean onLongClick(View v) {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION) {
-                        listener.clipBoard(keys.get(pos).getPrivate_key());
+                        //listener.clipBoard(keys.get(pos).getPrivate_key());
+                        listener.popMenu(v,keys.get(pos).getKey_type(),Key.PRIVATE_KEY,keys.get(pos).getPrivate_key());
                     }
                     return true;
                 }

@@ -1,8 +1,10 @@
 package com.coel.codyn;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -16,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,19 +29,24 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.coel.codyn.activitydata.main.Info;
+import com.coel.codyn.appUtil.JSONUtil;
 import com.coel.codyn.appUtil.SystemUtil;
+import com.coel.codyn.appUtil.ViewUtil;
 import com.coel.codyn.appUtil.cypherUtil.Coder;
 import com.coel.codyn.appUtil.cypherUtil.KeyUtil;
 import com.coel.codyn.fragment.key.KeyVM;
+import com.coel.codyn.room.Key;
 import com.coel.codyn.room.User;
 import com.coel.codyn.viewmodel.MainVM;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ActivityMain extends AppCompatActivity {
     public static final int LOGIN_REQUEST = 3;
-
-    public static final String USER_ID = "com.coel.codyn.EXTRA_USER_ID";
+    public static final int SCAN_QR_REQUEST = 4;
 
     private MainVM mainVM;
     private KeyVM keyVM;
@@ -51,12 +60,12 @@ public class ActivityMain extends AppCompatActivity {
 
     private AppBarConfiguration NavCfg;//工具栏配置
 
-    private FileService.CryptoBinder binder;
+    private FileCryptoService.CryptoBinder binder;
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            binder = (FileService.CryptoBinder) service;
+            binder = (FileCryptoService.CryptoBinder) service;
         }
 
         @Override
@@ -134,7 +143,14 @@ public class ActivityMain extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_scan:
-                SystemUtil.setClipboard(this, "扫描二维码");
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                            ActivityScanQR.CAMERA_PERMISSION_REQUEST);
+                }
+                else {
+                    startActivityForResult(new Intent(getApplicationContext(),ActivityScanQR.class),SCAN_QR_REQUEST);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -145,8 +161,8 @@ public class ActivityMain extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         assert data != null;
         //登录初始化
-        if (requestCode == LOGIN_REQUEST && resultCode == RESULT_OK && data.hasExtra(USER_ID)) {
-            int uid = data.getIntExtra(USER_ID, -1);
+        if (requestCode == LOGIN_REQUEST && resultCode == RESULT_OK && data.hasExtra(ActivityLogin.EXTRA_USER_ID)) {
+            int uid = data.getIntExtra(ActivityLogin.EXTRA_USER_ID, -1);
             if (uid == -1) {
                 finish();
             }
@@ -160,6 +176,32 @@ public class ActivityMain extends AppCompatActivity {
                     }
                 }
             });
+            return;
+        }
+        if (requestCode == SCAN_QR_REQUEST && resultCode == RESULT_OK && data.hasExtra(ActivityScanQR.EXTRA_QR_STRING)) {
+            String jsonStr = data.getStringExtra(ActivityScanQR.EXTRA_QR_STRING);
+            JSONObject result;
+            try {
+                assert jsonStr != null;
+                result = new JSONObject(jsonStr);
+                int attr = result.getInt(JSONUtil.KEY_ATTR);
+                int type = result.getInt(JSONUtil.KEY_TYPE);
+                String ks = result.getString(JSONUtil.KEY_VALUE);
+                Key key;
+                if(attr == Key.PUBLIC_KEY){
+                    key = new Key(keyVM.getUser_id(),type,"new QR scan Key,","",ks);
+                }
+                else{
+                    key = new Key(keyVM.getUser_id(),type,"new QR scan Key,",ks,"");
+                }
+
+                keyVM.insertKey(key);
+                ViewUtil.showToast(getApplicationContext(),"Scan QR success, Key inserted");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                ViewUtil.showToast(getApplicationContext(),"Invalid QR code");
+                return;
+            }
             return;
         }
 

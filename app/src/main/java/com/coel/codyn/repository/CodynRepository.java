@@ -55,6 +55,10 @@ public class CodynRepository {
         return userDAO.find_userLD(name);
     }
 
+    public User[] find_user(String name) {
+        return userDAO.find_user(name);
+    }
+
     //从初始化表中查询
     public LiveData<User> find_userLD(int id) {
         return userDAO.find_userLD(id);
@@ -77,6 +81,10 @@ public class CodynRepository {
 
     public LiveData<List<Key>> find_keys(int uid) {
         return keyDAO.find_keys(uid);
+    }
+
+    public LiveData<List<Key>> find_keys(int uid,int type) {
+        return keyDAO.find_keys(uid,type);
     }
 
 

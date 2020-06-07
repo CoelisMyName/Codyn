@@ -30,7 +30,13 @@ import com.coel.codyn.viewmodel.LoginVM;
 import java.util.List;
 
 public class ActivityLogin extends AppCompatActivity {
+    public static final int REGISTER_REQUEST = 1;
+
+    public static final String EXTRA_USER_ID = "com.coel.codyn.EXTRA_USER_ID";
+
     private LoginVM loginVM;
+    private EditText usernameEditText;
+    private EditText passwordEditText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,9 +48,10 @@ public class ActivityLogin extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        final EditText usernameEditText = findViewById(R.id.username);
-        final EditText passwordEditText = findViewById(R.id.password);
+        usernameEditText = findViewById(R.id.username);
+        passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
+        final Button registerButton = findViewById(R.id.register);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
         loginVM.getUsersLD().observe(this, new Observer<List<User>>() {
@@ -78,7 +85,7 @@ public class ActivityLogin extends AppCompatActivity {
                     Log.d("LG", "loginResult is null");
                     return;
                 }
-                loadingProgressBar.setVisibility(View.GONE);
+                loadingProgressBar.setVisibility(View.INVISIBLE);
                 if (loginResult.getError() != null) {
                     Log.d("LG", "loginResult is Error");
                     showLoginFailed(loginResult.getError());
@@ -87,7 +94,7 @@ public class ActivityLogin extends AppCompatActivity {
                     Log.d("LG", "loginResult is Success");
                     updateUiWithUser(loginResult.getSuccess());
                     Intent data = new Intent();
-                    data.putExtra(ActivityMain.USER_ID, loginResult.getSuccess().getUid());
+                    data.putExtra(EXTRA_USER_ID, loginResult.getSuccess().getUid());
                     setResult(Activity.RESULT_OK, data);
                     finish();
                 }
@@ -137,6 +144,17 @@ public class ActivityLogin extends AppCompatActivity {
                 Log.d("LG", "press button");
             }
         });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRegister();
+            }
+        });
+    }
+
+    private void startRegister(){
+        startActivityForResult(new Intent(this, ActivityRegister.class), REGISTER_REQUEST);
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
@@ -147,5 +165,20 @@ public class ActivityLogin extends AppCompatActivity {
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REGISTER_REQUEST && resultCode == RESULT_OK &&
+                data.hasExtra(ActivityRegister.EXTRA_USER_NAME) && data.hasExtra(ActivityRegister.EXTRA_USER_PASSWORD)){
+            String username = data.getStringExtra(ActivityRegister.EXTRA_USER_NAME), password = data.getStringExtra(ActivityRegister.EXTRA_USER_PASSWORD);
+            usernameEditText.setText(username);
+            passwordEditText.setText(password);
+            loginVM.login(username, password);
+            return;
+
+        }
+        Log.d("ERR", "requestCode: " + requestCode + " resultCode: " + resultCode);
     }
 }

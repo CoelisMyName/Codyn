@@ -1,11 +1,16 @@
 package com.coel.codyn.appUtil.cypherUtil.crypto;
 
+import org.spongycastle.jcajce.io.CipherOutputStream;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
-import org.spongycastle.jcajce.provider.asymmetric.ec.IESCipher;
+import org.spongycastle.jcajce.io.CipherInputStream;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
@@ -14,6 +19,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 
 
 //bouncy只支持私钥解密，公钥加密
@@ -51,6 +57,18 @@ public class ECC {
         return cipher.doFinal(text);
     }
 
+    public static Cipher getCipher(PublicKey key, int mode) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM, PROVIDER);
+        cipher.init(mode,key);
+        return cipher;
+    }
+
+    public static Cipher getCipher(PrivateKey key, int mode) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM, PROVIDER);
+        cipher.init(mode,key);
+        return cipher;
+    }
+
     //以下是字节串转成密钥
     public static PrivateKey privateKey(byte[] bytes) throws Exception {
         KeyFactory factory = KeyFactory.getInstance(FACTORY, PROVIDER);
@@ -73,6 +91,18 @@ public class ECC {
         keygen.initialize(new ECGenParameterSpec(CURVE));
         KeyPair pair = keygen.generateKeyPair();
         return pair;
+    }
+
+    public static CipherOutputStream getDecryptCipherOutputStream(OutputStream os, PrivateKey key) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        return new CipherOutputStream(os,cipher);
+    }
+
+    public static CipherInputStream getEncryptCipherInputStream(InputStream is, PublicKey key) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        return new CipherInputStream(is,cipher);
     }
 
     public static byte[] encode(PrivateKey key) {

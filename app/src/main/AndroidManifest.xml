@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.Camera.autofocus"/>
 
     <application
         android:name=".CodynApplication"
@@ -20,7 +21,7 @@
 
         <!-- 文件加密服务 -->
         <service
-            android:name=".FileService"
+            android:name=".FileCryptoService"
             android:enabled="true"
             android:exported="true"
             android:permission=".CRYPTO_FILE" />
@@ -30,6 +31,10 @@
             android:name=".ActivityLogin"
             android:label="@string/title_activity_login"
             android:parentActivityName=".ActivityMain" />
+
+        <activity android:name=".ActivityRegister"
+            android:label="@string/register"
+            android:parentActivityName=".ActivityLogin"/>
 
         <!-- 主活动 -->
         <activity
@@ -49,6 +54,13 @@
         <activity
             android:name=".ActivityAddEditKey"
             android:parentActivityName=".ActivityMain" />
+
+        <activity android:name=".ActivityScanQR"
+            android:parentActivityName=".ActivityMain" />
+
+        <activity android:name=".ActivityDisplayQR"
+            android:parentActivityName=".ActivityMain"/>
+
 
     </application>
 

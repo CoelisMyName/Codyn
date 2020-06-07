@@ -55,7 +55,13 @@ public class LoginVM extends AndroidViewModel {
     }
 
     public void login(String username, String password) {
+
+        if(!isUserNameValid(username)||!isPasswordValid(password)){
+            return;
+        }
+
         String phash = Coder.Base64_encode2text(Hash.sha256(password.getBytes()));
+
         if (userList == null) {
             loginResult.setValue(new LoginResult(R.string.login_error));
             return;

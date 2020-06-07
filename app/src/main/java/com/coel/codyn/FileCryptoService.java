@@ -8,22 +8,13 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
+import com.coel.codyn.repository.FileTaskRepository;
+import com.coel.codyn.service.FileTask;
 import com.coel.codyn.service.TaskView;
 
-public class FileService extends Service {
-    public final static int ERROR = -1;
-    public final static int SUCCESS = 0;
-    public final static int PAUSE = 1;
-    public final static int RESUME = 2;
-    public final static int CANCEL = 3;
-
-    public final static int MAX = 10000;
-
-    public final static int ENCRYPT = 1;
-    public final static int DECRYPT = 2;
-
+public class FileCryptoService extends Service {
     private Handler handler;
-
+    private FileTaskRepository repository;
     private CryptoBinder binder = new CryptoBinder();
 
     @Nullable
@@ -54,23 +45,11 @@ public class FileService extends Service {
 
     public class CryptoBinder extends Binder {
         //加解密请求
-        public boolean request(String source, String dest, int type, int attr, int mode, byte[] key) {
-            return false;
-        }
-
-        //暂停
-        public void pause(TaskView view) {
-
-        }
-
-        //继续
-        public void resume(TaskView view) {
-
-        }
-
-        //移除
-        public void remove(TaskView view) {
-
+        public void submit(FileTask ft, int r) {
+            if(repository == null){
+                repository = new FileTaskRepository();
+            }
+            repository.submit(ft,r);
         }
     }
 }

@@ -31,6 +31,9 @@ public interface UserDAO {
     @Query("SELECT * FROM user_table WHERE id LIKE :id")
     LiveData<User> find_userLD(int id);
 
+    @Query("SELECT * FROM user_table WHERE user_name LIKE :name")
+    User[] find_user(String name);
+
     //选取所有用户
     @Query("SELECT * FROM user_table")
     List<User> find_all_users();

@@ -2,7 +2,6 @@ package com.coel.codyn.repository;
 
 import com.coel.codyn.service.FileTask;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
@@ -22,9 +21,7 @@ public class FileTaskRepository {
     private final List<FileTask> display = new Vector<>(10);
     private final List<FileTask> pausingList = new Vector<>(10);
 
-    public FileTaskRepository() {
-    }
-
+    //主线程调用
     public void submit(FileTask f, int s) throws IllegalStateException{
         switch (s) {
 
@@ -45,8 +42,8 @@ public class FileTaskRepository {
 
             case RESUME:
                 if(f.taskResume()) {
-                    if (pausingList.remove(f))
-                        service.submit(f);
+                    pausingList.remove(f);
+                    service.submit(f);
                 }
                 break;
 

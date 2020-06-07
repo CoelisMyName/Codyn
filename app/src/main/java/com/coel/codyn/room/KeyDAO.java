@@ -27,5 +27,6 @@ public interface KeyDAO {
     @Query("SELECT * FROM key_table WHERE user_id LIKE :uid")
     LiveData<List<Key>> find_keys(int uid);
 
-
+    @Query("SELECT * FROM key_table WHERE user_id LIKE :uid AND key_type LIKE :type")
+    LiveData<List<Key>> find_keys(int uid,int type);
 }

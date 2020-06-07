@@ -1,9 +1,16 @@
 package com.coel.codyn.appUtil.cypherUtil.crypto;
 
+import org.spongycastle.jcajce.io.CipherInputStream;
+import org.spongycastle.jcajce.io.CipherOutputStream;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -24,6 +31,18 @@ public class AES {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, key, iv);
         return cipher.doFinal(text);
+    }
+
+    public static Cipher getCipher(SecretKey key,int opmode) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(opmode, key, IV);
+        return cipher;
+    }
+
+    public static Cipher getCipher(SecretKey key,int opmode, IvParameterSpec iv) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(opmode, key, iv);
+        return cipher;
     }
 
     public static byte[] decrypt(SecretKey key, byte[] text) throws Exception {

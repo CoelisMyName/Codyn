@@ -49,6 +49,8 @@ public class ActivityAddEditKey extends AppCompatActivity implements View.OnClic
     private EditText prikey;
     private EditText pubkey;
 
+    private boolean edit_mode = false;
+
     private AdEdVM adEdVM;
 
 
@@ -86,9 +88,13 @@ public class ActivityAddEditKey extends AppCompatActivity implements View.OnClic
         adEdVM.getTypeLD().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer index) {
-                prikey.setText("");
-                pubkey.setText("");
-
+                if(edit_mode){
+                    edit_mode = false;
+                }
+                else {
+                    prikey.setText("");
+                    pubkey.setText("");
+                }
                 if (index == -1) {
                     txttype.setText("密钥类型");
                     genkey.setEnabled(false);
@@ -106,6 +112,7 @@ public class ActivityAddEditKey extends AppCompatActivity implements View.OnClic
 
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_KEY_ID)) {
+            edit_mode = true;
             //是编辑已有的密钥
             setTitle(R.string.edit_key);
             int key_type_int = intent.getIntExtra(EXTRA_KEY_TYPE, -1);

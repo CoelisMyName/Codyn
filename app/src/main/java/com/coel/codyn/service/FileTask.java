@@ -4,13 +4,25 @@ import android.os.Handler;
 
 import androidx.annotation.NonNull;
 
+import org.spongycastle.jcajce.io.CipherOutputStream;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FileTask implements Runnable, TaskControl, FileCryptoView {
+import javax.crypto.Cipher;
+
+public class FileTask implements TaskControl, FileCryptoView {
     public final static int MAX = 10000;
 
-    private AtomicInteger stat = new AtomicInteger(WAITING);
+    private final AtomicInteger stat = new AtomicInteger(WAITING);
     private int progress = 0;
+    private final long size;
+    private long index = 0;
     @NonNull
     private String source;
     @NonNull
@@ -19,66 +31,127 @@ public class FileTask implements Runnable, TaskControl, FileCryptoView {
     private int attr = -1;
     private byte[] key = null;
     private int mode = -1;
+    private StreamCrypto streamCrypto = new StreamCrypto();
 
     Handler handler;
 
-    public FileTask(String s, String d, int t, int a, byte[] k, int m){
-        source = s;
-        dest = d;
-        type = t;
-        attr = a;
-        mode = m;
-        key = k;
+    //为了安全，限制在100M以内吧
+    public FileTask(String source, String dest, int type, int attr, byte[] key, int mode) throws Exception {
+        this.source = source;
+        this.dest = dest;
+        this.type = type;
+        this.attr = attr;
+        this.mode = mode;
+        this.key = key;
+        File sf = new File(source);
+        size =sf.length();
+        streamCrypto.setInputStream(new BufferedInputStream(new FileInputStream(sf)));
+
     }
+
+    public void setCipher( Cipher cipher) throws Exception {
+        streamCrypto.setCipherOutputStream(new CipherOutputStream(new BufferedOutputStream(new FileOutputStream(dest)),cipher));
+    }
+
 
     //工作内容
     @Override
     public void run() {
+        int temp;
+        byte[] buffer;
+        synchronized (stat) {
+            temp = stat.getAndSet(WORKING);
+            if (temp != WAITING) {
+                stat.set(temp);
+                return;
+            }
+
+            if((buffer = BufferProvider.getInstance().getBuffer()) == null){
+                stat.set(ERROR);
+                return;
+            }
+            streamCrypto.setBuffer(buffer);
+        }
+
+        while ((temp = getStat()) == WORKING) {
+            try {
+
+                index += streamCrypto.doCrypto();
+                progress = (int) ((index * MAX )/ size);
+                if(progress == MAX){
+                    synchronized (stat) {
+                        stat.set(FINISHED);
+                    }
+                    streamCrypto.clearBuffer();
+                    if(!BufferProvider.getInstance().putBuffer(buffer))
+                        new Exception("can't put buffer into BufferProvider").printStackTrace();
+                    return;
+                }
+
+            }catch (Exception ex){
+                synchronized (stat){
+                    stat.set(ERROR);
+                }
+                streamCrypto.clearBuffer();
+                if(!BufferProvider.getInstance().putBuffer(buffer))
+                    new Exception("can't put buffer into BufferProvider").printStackTrace();
+                return;
+            }
+        }
 
     }
 
     //暂停工作
+    //主线程
     @Override
     public boolean taskPause() {
-        int temp = stat.getAndSet(PAUSING);
-        if (temp == ERROR || temp == CANCELED || temp == FINISHED) {
-            stat.set(temp);
-            return false;
+        synchronized (stat) {
+            int temp = stat.getAndSet(PAUSING);
+            if (temp == ERROR || temp == CANCELED || temp == FINISHED) {
+                stat.set(temp);
+                return false;
+            }
+            return true;
         }
-        return true;
     }
 
     //移除工作
+    //主线程
     @Override
     public boolean taskCancel() {
-        int temp = stat.getAndSet(CANCELED);
-        if (temp == ERROR || temp == FINISHED) {
-            stat.set(temp);
-            return false;
+        synchronized (stat) {
+            int temp = stat.getAndSet(CANCELED);
+            if (temp == ERROR || temp == FINISHED) {
+                stat.set(temp);
+                return false;
+            }
+            return true;
         }
-        return true;
     }
 
     //继续工作
+    //主线程
     @Override
     public boolean taskResume() {
-        int temp = stat.getAndSet(WAITING);
-        if (temp == ERROR || temp == CANCELED || temp == FINISHED) {
-            stat.set(temp);
-            return false;
+        synchronized (stat) {
+            int temp = stat.getAndSet(WAITING);
+            if (temp == ERROR || temp == CANCELED || temp == FINISHED) {
+                stat.set(temp);
+                return false;
+            }
+            return true;
         }
-        return true;
     }
 
     //以下是活动View来源
     @Override
     public String getSource() {
-        return null;
+        return source;
     }
 
     @Override
     public String getDest() {
-        return null;
+        return dest;
     }
 
     @Override
@@ -88,17 +161,17 @@ public class FileTask implements Runnable, TaskControl, FileCryptoView {
 
     @Override
     public int getMode() {
-        return 0;
+        return mode;
     }
 
     @Override
     public int getType() {
-        return 0;
+        return type;
     }
 
     @Override
     public int getAttr() {
-        return 0;
+        return attr;
     }
 
     @Override
