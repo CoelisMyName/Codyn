@@ -140,6 +140,16 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for(int i:grantResults){
+            if(i!=PackageManager.PERMISSION_GRANTED)
+                return;
+        }
+        startActivityForResult(new Intent(getApplicationContext(),ActivityScanQR.class),SCAN_QR_REQUEST);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_scan:
