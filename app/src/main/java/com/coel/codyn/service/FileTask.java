@@ -4,24 +4,28 @@ import android.os.Handler;
 
 import androidx.annotation.NonNull;
 
+import com.coel.codyn.appUtil.cypherUtil.Coder;
+import com.coel.codyn.repository.FileTaskRepository;
+
 import org.spongycastle.jcajce.io.CipherOutputStream;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.crypto.Cipher;
 
 public class FileTask implements TaskControl, FileCryptoView {
     public final static int MAX = 10000;
-
     private final AtomicInteger stat = new AtomicInteger(WAITING);
-    private int progress = 0;
     private final long size;
+    Handler handler;
+    private int id = FileTaskRepository.getID();
+    private int progress = 0;
     private long index = 0;
     @NonNull
     private String source;
@@ -32,8 +36,9 @@ public class FileTask implements TaskControl, FileCryptoView {
     private byte[] key = null;
     private int mode = -1;
     private StreamCrypto streamCrypto = new StreamCrypto();
-
-    Handler handler;
+    private FileInputStream fis;
+    private FileOutputStream fos;
+    private CipherOutputStream cos;
 
     //为了安全，限制在100M以内吧
     public FileTask(String source, String dest, int type, int attr, byte[] key, int mode) throws Exception {
@@ -44,15 +49,21 @@ public class FileTask implements TaskControl, FileCryptoView {
         this.mode = mode;
         this.key = key;
         File sf = new File(source);
-        size =sf.length();
-        streamCrypto.setInputStream(new BufferedInputStream(new FileInputStream(sf)));
+        fis = new FileInputStream(sf);
+        fos = new FileOutputStream(dest);
+        size = sf.length();
+        streamCrypto.setInputStream(new BufferedInputStream(fis));
 
     }
 
-    public void setCipher( Cipher cipher) throws Exception {
-        streamCrypto.setCipherOutputStream(new CipherOutputStream(new BufferedOutputStream(new FileOutputStream(dest)),cipher));
+    public void setCipher(Cipher cipher) throws Exception {
+        cos = new CipherOutputStream(new BufferedOutputStream(fos), cipher);
+        streamCrypto.setCipherOutputStream(cos);
     }
 
+    public void setHandler(Handler handler) {
+        this.handler = handler;
+    }
 
     //工作内容
     @Override
@@ -66,7 +77,7 @@ public class FileTask implements TaskControl, FileCryptoView {
                 return;
             }
 
-            if((buffer = BufferProvider.getInstance().getBuffer()) == null){
+            if ((buffer = BufferProvider.getInstance().getBuffer()) == null) {
                 stat.set(ERROR);
                 return;
             }
@@ -75,27 +86,43 @@ public class FileTask implements TaskControl, FileCryptoView {
 
         while ((temp = getStat()) == WORKING) {
             try {
-
                 index += streamCrypto.doCrypto();
-                progress = (int) ((index * MAX )/ size);
-                if(progress == MAX){
+                progress = (int) ((index * MAX) / size);
+                if (handler != null) {
+                    handler.sendEmptyMessage(1);
+                }
+                if (progress == MAX) {
                     synchronized (stat) {
                         stat.set(FINISHED);
                     }
-                    streamCrypto.clearBuffer();
-                    if(!BufferProvider.getInstance().putBuffer(buffer))
-                        new Exception("can't put buffer into BufferProvider").printStackTrace();
-                    return;
                 }
 
-            }catch (Exception ex){
-                synchronized (stat){
+            } catch (Exception ex) {
+                synchronized (stat) {
                     stat.set(ERROR);
                 }
-                streamCrypto.clearBuffer();
-                if(!BufferProvider.getInstance().putBuffer(buffer))
-                    new Exception("can't put buffer into BufferProvider").printStackTrace();
-                return;
+            }
+        }
+        if (temp == CANCELED || temp == ERROR || temp == FINISHED) {
+            handler.sendEmptyMessage(1);
+            streamCrypto.clearBuffer();
+            if (!BufferProvider.getInstance().putBuffer(buffer)) {
+                new Exception("can't put buffer into BufferProvider").printStackTrace();
+            }
+            try {
+                cos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -143,6 +170,11 @@ public class FileTask implements TaskControl, FileCryptoView {
         }
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
     //以下是活动View来源
     @Override
     public String getSource() {
@@ -155,8 +187,8 @@ public class FileTask implements TaskControl, FileCryptoView {
     }
 
     @Override
-    public byte[] getKey() {
-        return new byte[0];
+    public String getKey() {
+        return Coder.Base64_encode2text(key);
     }
 
     @Override

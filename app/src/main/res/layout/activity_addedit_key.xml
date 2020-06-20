@@ -15,8 +15,8 @@
         android:autofillHints="@string/comment"
         android:ems="10"
         android:hint="@string/comment"
-        android:maxLines="3"
         android:inputType="textMultiLine"
+        android:maxLines="3"
         app:layout_constraintTop_toTopOf="parent"
         tool:text="于密钥关于密钥关于密钥关于密钥关于密钥关于密钥关于密钥关于密钥" />
 
@@ -46,9 +46,9 @@
         android:layout_marginTop="20dp"
         android:autofillHints="@string/private_key"
         android:ems="10"
-        android:maxLines="6"
         android:hint="@string/private_key"
         android:inputType="textMultiLine"
+        android:maxLines="6"
         app:layout_constraintTop_toBottomOf="@id/btn_keygen" />
 
     <EditText
@@ -58,9 +58,9 @@
         android:layout_marginTop="20dp"
         android:autofillHints="@string/public_key"
         android:ems="10"
-        android:maxLines="3"
         android:hint="@string/public_key"
         android:inputType="textMultiLine"
+        android:maxLines="3"
         app:layout_constraintTop_toBottomOf="@id/pri_key_EditText" />
 
 

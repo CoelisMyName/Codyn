@@ -2,8 +2,6 @@ package com.coel.codyn.activitydata.register;
 
 import androidx.annotation.Nullable;
 
-import com.coel.codyn.activitydata.login.LoggedInUserView;
-
 public class RegisterResult {
     @Nullable
     private RegisterInUserView success;

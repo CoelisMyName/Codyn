@@ -28,9 +28,9 @@ public class RegisterVM extends AndroidViewModel {
         repository = new CodynRepository(application);
     }
 
-    public void register(String username, String password, String pwrepeat){
-        if(isUserNameValid(username) && isPasswordValid(password) && isPasswordSame(password,pwrepeat)){
-            new RegisterTask().execute(username,password);
+    public void register(String username, String password, String pwrepeat) {
+        if (isUserNameValid(username) && isPasswordValid(password) && isPasswordSame(password, pwrepeat)) {
+            new RegisterTask().execute(username, password);
         }
     }
 
@@ -42,37 +42,14 @@ public class RegisterVM extends AndroidViewModel {
         return registerResult;
     }
 
-    private class RegisterTask extends AsyncTask<String,Void,RegisterResult>{
-
-        @Override
-        protected RegisterResult doInBackground(String... strings) {
-            String name = strings[0], pw = strings[1];
-            User users[] = repository.find_user(name);
-            if( users == null || users.length == 0 ){
-                repository.insertUser(new User(name,Coder.Base64_encode2text(Hash.sha256(pw.getBytes()))));
-                return new RegisterResult(new RegisterInUserView(name,pw));
-            }
-            return new RegisterResult(R.string.register_fail);
-        }
-
-        @Override
-        protected void onPostExecute(RegisterResult r) {
-            super.onPostExecute(r);
-            registerResult.setValue(r);
-        }
-    }
-
     public void registerDataChanged(String username, String password, String repeat) {
         if (!isUserNameValid(username)) {
-            registerFormState.setValue(new RegisterFormState(R.string.invalid_username, null,null));
-        }
-        else if (!isPasswordValid(password)) {
-            registerFormState.setValue(new RegisterFormState(null, R.string.invalid_password,null));
-        }
-        else if (!isPasswordSame(password, repeat)) {
-            registerFormState.setValue(new RegisterFormState(null, null,R.string.invalid_password_repeat));
-        }
-        else {
+            registerFormState.setValue(new RegisterFormState(R.string.invalid_username, null, null));
+        } else if (!isPasswordValid(password)) {
+            registerFormState.setValue(new RegisterFormState(null, R.string.invalid_password, null));
+        } else if (!isPasswordSame(password, repeat)) {
+            registerFormState.setValue(new RegisterFormState(null, null, R.string.invalid_password_repeat));
+        } else {
             registerFormState.setValue(new RegisterFormState(true));
         }
     }
@@ -97,5 +74,25 @@ public class RegisterVM extends AndroidViewModel {
     // A placeholder password validation check
     private boolean isPasswordSame(String password, String passwordRepeat) {
         return password.equals(passwordRepeat);
+    }
+
+    private class RegisterTask extends AsyncTask<String, Void, RegisterResult> {
+
+        @Override
+        protected RegisterResult doInBackground(String... strings) {
+            String name = strings[0], pw = strings[1];
+            User users[] = repository.find_user(name);
+            if (users == null || users.length == 0) {
+                repository.insertUser(new User(name, Coder.Base64_encode2text(Hash.sha256(pw.getBytes()))));
+                return new RegisterResult(new RegisterInUserView(name, pw));
+            }
+            return new RegisterResult(R.string.register_fail);
+        }
+
+        @Override
+        protected void onPostExecute(RegisterResult r) {
+            super.onPostExecute(r);
+            registerResult.setValue(r);
+        }
     }
 }

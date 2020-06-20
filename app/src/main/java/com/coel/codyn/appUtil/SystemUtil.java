@@ -16,7 +16,7 @@ public class SystemUtil {
         cm.setPrimaryClip(mClipData);
     }
 
-    public String getExternalFilesDir(Context context) {
+    public static String getExternalFilesDir(Context context) {
         String path = "";
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {

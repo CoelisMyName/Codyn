@@ -11,11 +11,11 @@ public class StreamCrypto {
     private byte[] buffer;
     private int l;
 
-    public void setInputStream(InputStream is){
+    public void setInputStream(InputStream is) {
         this.is = is;
     }
 
-    public void setCipherOutputStream(CipherOutputStream cos){
+    public void setCipherOutputStream(CipherOutputStream cos) {
         this.cos = cos;
     }
 
@@ -23,14 +23,14 @@ public class StreamCrypto {
         this.buffer = buffer;
     }
 
-    public void clearBuffer(){
+    public void clearBuffer() {
         buffer = null;
     }
 
     int doCrypto() throws IOException {
         l = is.read(buffer);
-        if(l > 0){
-            cos.write(buffer,0,l);
+        if (l > 0) {
+            cos.write(buffer, 0, l);
         }
         return l;
     }

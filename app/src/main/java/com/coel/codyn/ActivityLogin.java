@@ -153,7 +153,7 @@ public class ActivityLogin extends AppCompatActivity {
         });
     }
 
-    private void startRegister(){
+    private void startRegister() {
         startActivityForResult(new Intent(this, ActivityRegister.class), REGISTER_REQUEST);
     }
 
@@ -170,8 +170,8 @@ public class ActivityLogin extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REGISTER_REQUEST && resultCode == RESULT_OK &&
-                data.hasExtra(ActivityRegister.EXTRA_USER_NAME) && data.hasExtra(ActivityRegister.EXTRA_USER_PASSWORD)){
+        if (requestCode == REGISTER_REQUEST && resultCode == RESULT_OK &&
+                data.hasExtra(ActivityRegister.EXTRA_USER_NAME) && data.hasExtra(ActivityRegister.EXTRA_USER_PASSWORD)) {
             String username = data.getStringExtra(ActivityRegister.EXTRA_USER_NAME), password = data.getStringExtra(ActivityRegister.EXTRA_USER_PASSWORD);
             usernameEditText.setText(username);
             passwordEditText.setText(password);

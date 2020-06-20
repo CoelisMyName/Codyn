@@ -12,6 +12,7 @@ public class ActivityDisplayQR extends AppCompatActivity {
     public static final String EXTRA_QR_IMAGE = "com.coel.codyn.EXTRA_QR_IMAGE";
     public static final String BUNDLE = "com.coel.codyn.BUNDLE";
     public static Bitmap bm;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +25,6 @@ public class ActivityDisplayQR extends AppCompatActivity {
         Bitmap bitmap = (Bitmap) bundle.getParcelable(EXTRA_QR_IMAGE);
         */
         imageView.setImageBitmap(bm);
-        Log.d("ActivityDisplayQR","display success");
+        Log.d("ActivityDisplayQR", "display success");
     }
 }

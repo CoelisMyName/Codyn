@@ -23,6 +23,7 @@
     <string name="encode">编码</string>
     <string name="decode">解码</string>
     <string name="unarchive">导出用户文件</string>
+    <string name="file">文件</string>
     <string name="exit">退出</string>
     <string name="my_key">我的密钥</string>
     <string name="settings">设置</string>

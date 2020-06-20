@@ -36,7 +36,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.json.JSONException;
 
 import java.util.List;
-import java.util.Objects;
 
 public class FragmentKey extends Fragment {
     public static final int ADD_KEY_REQUEST = 1;
@@ -94,11 +93,11 @@ public class FragmentKey extends Fragment {
 
             @Override
             public void popMenu(View view, int t, int a, String k) {
-                popupMenu(view, t, a,k);
+                popupMenu(view, t, a, k);
             }
         });
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT){
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -107,9 +106,9 @@ public class FragmentKey extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                if(viewHolder.getAdapterPosition() != RecyclerView.NO_POSITION){
+                if (viewHolder.getAdapterPosition() != RecyclerView.NO_POSITION) {
                     keyVM.deleteKey(adapter.getKey(viewHolder.getAdapterPosition()));
-                    ViewUtil.showToast(getContext(),"Key Delete");
+                    ViewUtil.showToast(getContext(), "Key Delete");
                 }
             }
 
@@ -168,18 +167,18 @@ public class FragmentKey extends Fragment {
     }
 
     private void startEditKeyAct(Key k) {
-        Intent intent = new Intent(getActivity(),ActivityAddEditKey.class);
-        intent.putExtra(ActivityAddEditKey.EXTRA_KEY_ID,k.getId());
-        intent.putExtra(ActivityAddEditKey.EXTRA_KEY_COMMENT,k.getComment());
-        intent.putExtra(ActivityAddEditKey.EXTRA_KEY_TYPE,k.getKey_type());
-        intent.putExtra(ActivityAddEditKey.EXTRA_PRIVATE_KEY,k.getPrivate_key());
-        intent.putExtra(ActivityAddEditKey.EXTRA_PUBLIC_KEY,k.getPublic_key());
-        intent.putExtra(ActivityAddEditKey.EXTRA_USER_ID,k.getUser_id());
-        startActivityForResult(intent,EDIT_KEY_REQUEST);
+        Intent intent = new Intent(getActivity(), ActivityAddEditKey.class);
+        intent.putExtra(ActivityAddEditKey.EXTRA_KEY_ID, k.getId());
+        intent.putExtra(ActivityAddEditKey.EXTRA_KEY_COMMENT, k.getComment());
+        intent.putExtra(ActivityAddEditKey.EXTRA_KEY_TYPE, k.getKey_type());
+        intent.putExtra(ActivityAddEditKey.EXTRA_PRIVATE_KEY, k.getPrivate_key());
+        intent.putExtra(ActivityAddEditKey.EXTRA_PUBLIC_KEY, k.getPublic_key());
+        intent.putExtra(ActivityAddEditKey.EXTRA_USER_ID, k.getUser_id());
+        startActivityForResult(intent, EDIT_KEY_REQUEST);
     }
 
     private void startDisplayQRAct(Bitmap bm) {
-        Intent intent = new Intent(getActivity(),ActivityDisplayQR.class);
+        Intent intent = new Intent(getActivity(), ActivityDisplayQR.class);
         ActivityDisplayQR.bm = bm;
         /*
         //Bundle缓存区1MB，太小了惹
@@ -188,27 +187,27 @@ public class FragmentKey extends Fragment {
         intent.putExtra(ActivityDisplayQR.BUNDLE, bundle);
         */
         startActivity(intent);
-        Log.d("startDisplayQRAct","success");
+        Log.d("startDisplayQRAct", "success");
     }
 
-    private void popupMenu(View view, int t, int a,String k){
-        if(popupMenu == null){
-            popupMenu = new PopupMenu(requireContext(),view);
-            popupMenu.getMenuInflater().inflate(R.menu.key_menu,popupMenu.getMenu());
+    private void popupMenu(View view, int t, int a, String k) {
+        if (popupMenu == null) {
+            popupMenu = new PopupMenu(requireContext(), view);
+            popupMenu.getMenuInflater().inflate(R.menu.key_menu, popupMenu.getMenu());
         }
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Log.d("popupMenu","success");
-                switch (item.getItemId()){
+                Log.d("popupMenu", "success");
+                switch (item.getItemId()) {
                     case R.id.copy:
-                        SystemUtil.setClipboard(requireContext(),k);
+                        SystemUtil.setClipboard(requireContext(), k);
                         break;
                     case R.id.qrcode:
                         try {
-                            Bitmap bm = QRUtil.create(JSONUtil.JSONString(JSONUtil.createKeyJSON(t,a,k)));
+                            Bitmap bm = QRUtil.create(JSONUtil.JSONString(JSONUtil.createKeyJSON(t, a, k)));
 
-                            Log.d("popupMenu","success " + bm.getByteCount());
+                            Log.d("popupMenu", "success " + bm.getByteCount());
                             startDisplayQRAct(bm);
                         } catch (JSONException e) {
                             e.printStackTrace();

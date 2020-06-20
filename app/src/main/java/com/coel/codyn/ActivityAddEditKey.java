@@ -88,10 +88,9 @@ public class ActivityAddEditKey extends AppCompatActivity implements View.OnClic
         adEdVM.getTypeLD().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer index) {
-                if(edit_mode){
+                if (edit_mode) {
                     edit_mode = false;
-                }
-                else {
+                } else {
                     prikey.setText("");
                     pubkey.setText("");
                 }

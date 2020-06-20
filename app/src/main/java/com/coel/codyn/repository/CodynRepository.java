@@ -83,8 +83,8 @@ public class CodynRepository {
         return keyDAO.find_keys(uid);
     }
 
-    public LiveData<List<Key>> find_keys(int uid,int type) {
-        return keyDAO.find_keys(uid,type);
+    public LiveData<List<Key>> find_keys(int uid, int type) {
+        return keyDAO.find_keys(uid, type);
     }
 
 

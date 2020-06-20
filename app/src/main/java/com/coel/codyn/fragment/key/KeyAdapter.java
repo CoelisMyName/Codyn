@@ -16,13 +16,7 @@ import com.coel.codyn.appUtil.cypherUtil.Coder;
 import com.coel.codyn.appUtil.cypherUtil.KeyUtil;
 import com.coel.codyn.room.Key;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class KeyAdapter extends ListAdapter<Key,KeyAdapter.KeyHolder> {
-    //private List<Key> keys = new ArrayList<>();
-    private KeyListListener listener;
-
+public class KeyAdapter extends ListAdapter<Key, KeyAdapter.KeyHolder> {
     private static final DiffUtil.ItemCallback<Key> DIFF_CALLBACK = new DiffUtil.ItemCallback<Key>() {
         @Override
         public boolean areItemsTheSame(@NonNull Key oldItem, @NonNull Key newItem) {
@@ -38,6 +32,8 @@ public class KeyAdapter extends ListAdapter<Key,KeyAdapter.KeyHolder> {
                     oldItem.getPublic_key().equals(newItem.getPublic_key());
         }
     };
+    //private List<Key> keys = new ArrayList<>();
+    private KeyListListener listener;
 
     public KeyAdapter() {
         super(DIFF_CALLBACK);
@@ -76,7 +72,7 @@ public class KeyAdapter extends ListAdapter<Key,KeyAdapter.KeyHolder> {
         }
     }
 
-    public Key getKey(int i){
+    public Key getKey(int i) {
         return getItem(i);
     }
 
@@ -93,7 +89,7 @@ public class KeyAdapter extends ListAdapter<Key,KeyAdapter.KeyHolder> {
 
         void clipBoard(String key);
 
-        void popMenu(View view, int t, int a,String k);
+        void popMenu(View view, int t, int a, String k);
     }
 
     public class KeyHolder extends RecyclerView.ViewHolder {
@@ -127,7 +123,7 @@ public class KeyAdapter extends ListAdapter<Key,KeyAdapter.KeyHolder> {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION) {
                         //listener.clipBoard(keys.get(pos).getPublic_key());
-                        listener.popMenu(v,getItem(pos).getKey_type(),Key.PUBLIC_KEY,getItem(pos).getPublic_key());
+                        listener.popMenu(v, getItem(pos).getKey_type(), Key.PUBLIC_KEY, getItem(pos).getPublic_key());
                     }
                     return true;
                 }
@@ -152,7 +148,7 @@ public class KeyAdapter extends ListAdapter<Key,KeyAdapter.KeyHolder> {
                     int pos = getAdapterPosition();
                     if (listener != null && pos != RecyclerView.NO_POSITION) {
                         //listener.clipBoard(keys.get(pos).getPrivate_key());
-                        listener.popMenu(v,getItem(pos).getKey_type(),Key.PRIVATE_KEY,getItem(pos).getPrivate_key());
+                        listener.popMenu(v, getItem(pos).getKey_type(), Key.PRIVATE_KEY, getItem(pos).getPrivate_key());
                     }
                     return true;
                 }

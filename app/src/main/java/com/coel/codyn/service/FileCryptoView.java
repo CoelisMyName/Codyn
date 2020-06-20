@@ -1,17 +1,17 @@
 package com.coel.codyn.service;
 
-import android.widget.TextView;
-
 public interface FileCryptoView extends TaskView {
-    public String getSource();
+    int getId();
 
-    public String getDest();
+    String getSource();
 
-    public byte[] getKey();
+    String getDest();
 
-    public int getMode();
+    String getKey();
 
-    public int getType();
+    int getMode();
 
-    public int getAttr();
+    int getType();
+
+    int getAttr();
 }

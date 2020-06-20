@@ -29,7 +29,6 @@ import com.coel.codyn.viewmodel.MainVM;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.Objects;
 
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -74,7 +73,7 @@ public class FragmentFunction extends Fragment {
             @Override
             public void clipBoard(String s) {
                 SystemUtil.setClipboard(getContext(), s);
-                ViewUtil.showToast(getContext(),"复制到剪贴板");
+                ViewUtil.showToast(getContext(), "复制到剪贴板");
             }
 
             @Override
@@ -115,8 +114,8 @@ public class FragmentFunction extends Fragment {
             @Override
             public void encrypt(byte[] bin) {
                 Info ins = mainVM.getInfo().getValue();
-                if(ins.getATTR() != Info.DEFAULT){
-                    CryptoAtask task = new CryptoAtask(CryptoAtask.ENCRYPT, ins.getTYPE(),ins.getATTR());
+                if (ins.getATTR() != Info.DEFAULT) {
+                    CryptoAtask task = new CryptoAtask(CryptoAtask.ENCRYPT, ins.getTYPE(), ins.getATTR());
                     task.execute(ins.getKey(), bin);
                 }
             }
@@ -124,7 +123,7 @@ public class FragmentFunction extends Fragment {
             @Override
             public void decrypt(byte[] bin) {
                 Info ins = mainVM.getInfo().getValue();
-                if(ins.getATTR() != Info.DEFAULT) {
+                if (ins.getATTR() != Info.DEFAULT) {
                     CryptoAtask task = new CryptoAtask(CryptoAtask.DECRYPT, ins.getTYPE(), ins.getATTR());
                     task.execute(ins.getKey(), bin);
                 }

@@ -30,7 +30,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.coel.codyn.activitydata.main.Info;
 import com.coel.codyn.appUtil.JSONUtil;
-import com.coel.codyn.appUtil.SystemUtil;
 import com.coel.codyn.appUtil.ViewUtil;
 import com.coel.codyn.appUtil.cypherUtil.Coder;
 import com.coel.codyn.appUtil.cypherUtil.KeyUtil;
@@ -105,7 +104,7 @@ public class ActivityMain extends AppCompatActivity {
                 toolbar, R.string.open, R.string.close);//侧边栏开关绑定在工具栏上（左侧三道杠）
         actionBarDrawerToggle.syncState();
 
-        NavCfg = new AppBarConfiguration.Builder(R.id.bottom_nav_function, R.id.bottom_nav_key).build();//设定AppBarConfiguration
+        NavCfg = new AppBarConfiguration.Builder(R.id.bottom_nav_function, R.id.bottom_nav_key, R.id.bottom_nav_file).build();//设定AppBarConfiguration
 
         NavController NavController = Navigation.findNavController(this, R.id.nav_host_fragment);//获得nav fragment实例
 
@@ -142,11 +141,13 @@ public class ActivityMain extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        for(int i:grantResults){
-            if(i!=PackageManager.PERMISSION_GRANTED)
-                return;
+        if (requestCode == ActivityScanQR.CAMERA_PERMISSION_REQUEST) {
+            for (int i : grantResults) {
+                if (i != PackageManager.PERMISSION_GRANTED)
+                    return;
+            }
+            startActivityForResult(new Intent(getApplicationContext(), ActivityScanQR.class), SCAN_QR_REQUEST);
         }
-        startActivityForResult(new Intent(getApplicationContext(),ActivityScanQR.class),SCAN_QR_REQUEST);
     }
 
     @Override
@@ -157,9 +158,8 @@ public class ActivityMain extends AppCompatActivity {
                         != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
                             ActivityScanQR.CAMERA_PERMISSION_REQUEST);
-                }
-                else {
-                    startActivityForResult(new Intent(getApplicationContext(),ActivityScanQR.class),SCAN_QR_REQUEST);
+                } else {
+                    startActivityForResult(new Intent(getApplicationContext(), ActivityScanQR.class), SCAN_QR_REQUEST);
                 }
                 return true;
         }
@@ -186,6 +186,9 @@ public class ActivityMain extends AppCompatActivity {
                     }
                 }
             });
+            //启动服务
+            Intent intent = new Intent(this, FileCryptoService.class);
+            startForegroundService(intent);
             return;
         }
         if (requestCode == SCAN_QR_REQUEST && resultCode == RESULT_OK && data.hasExtra(ActivityScanQR.EXTRA_QR_STRING)) {
@@ -198,18 +201,17 @@ public class ActivityMain extends AppCompatActivity {
                 int type = result.getInt(JSONUtil.KEY_TYPE);
                 String ks = result.getString(JSONUtil.KEY_VALUE);
                 Key key;
-                if(attr == Key.PUBLIC_KEY){
-                    key = new Key(keyVM.getUser_id(),type,"new QR scan Key,","",ks);
-                }
-                else{
-                    key = new Key(keyVM.getUser_id(),type,"new QR scan Key,",ks,"");
+                if (attr == Key.PUBLIC_KEY) {
+                    key = new Key(keyVM.getUser_id(), type, "new QR scan Key,", "", ks);
+                } else {
+                    key = new Key(keyVM.getUser_id(), type, "new QR scan Key,", ks, "");
                 }
 
                 keyVM.insertKey(key);
-                ViewUtil.showToast(getApplicationContext(),"Scan QR success, Key inserted");
+                ViewUtil.showToast(getApplicationContext(), "Scan QR success, Key inserted");
             } catch (JSONException e) {
                 e.printStackTrace();
-                ViewUtil.showToast(getApplicationContext(),"Invalid QR code");
+                ViewUtil.showToast(getApplicationContext(), "Invalid QR code");
                 return;
             }
             return;

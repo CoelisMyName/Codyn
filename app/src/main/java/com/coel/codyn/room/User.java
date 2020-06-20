@@ -29,7 +29,8 @@ public class User {
     @NonNull
     private String password_hash;
 
-    public User(){}
+    public User() {
+    }
 
     public User(@NotNull String name, @NotNull String password_hash) {
         this.user_name = name;

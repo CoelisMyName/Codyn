@@ -56,6 +56,18 @@ public class RSA {
         return kpg.genKeyPair();
     }
 
+    public static Cipher getCipher(PrivateKey key, int opmode) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(opmode, key);
+        return cipher;
+    }
+
+    public static Cipher getCipher(PublicKey key, int opmode) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(opmode, key);
+        return cipher;
+    }
+
     public static byte[] encode(PrivateKey key) {
         return key.getEncoded();
     }

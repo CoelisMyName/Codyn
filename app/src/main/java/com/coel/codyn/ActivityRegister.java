@@ -46,11 +46,11 @@ public class ActivityRegister extends AppCompatActivity {
         registerVM.getRegisterResult().observe(this, new Observer<RegisterResult>() {
             @Override
             public void onChanged(RegisterResult registerResult) {
-                if(registerResult == null ){
+                if (registerResult == null) {
                     return;
                 }
                 loadingProgressBar.setVisibility(View.INVISIBLE);
-                if (registerResult.getSuccess() != null){
+                if (registerResult.getSuccess() != null) {
                     RegisterInUserView success = registerResult.getSuccess();
                     Intent data = new Intent();
                     data.putExtra(EXTRA_USER_NAME, success.getName());
@@ -59,7 +59,7 @@ public class ActivityRegister extends AppCompatActivity {
                     finish();
                     return;
                 }
-                if(registerResult.getError() != null){
+                if (registerResult.getError() != null) {
                     Toast.makeText(getApplicationContext(), registerResult.getError(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -68,7 +68,7 @@ public class ActivityRegister extends AppCompatActivity {
         registerVM.getRegisterFormState().observe(this, new Observer<RegisterFormState>() {
             @Override
             public void onChanged(RegisterFormState registerFormState) {
-                if(registerFormState == null){
+                if (registerFormState == null) {
                     return;
                 }
                 registerButton.setEnabled(registerFormState.isDataValid());
@@ -110,7 +110,7 @@ public class ActivityRegister extends AppCompatActivity {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     loadingProgressBar.setVisibility(View.VISIBLE);
                     registerVM.register(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString(),passwordRepeatEditText.getText().toString());
+                            passwordEditText.getText().toString(), passwordRepeatEditText.getText().toString());
                     Log.d("LG", "press button");
                 }
                 return false;
@@ -122,7 +122,7 @@ public class ActivityRegister extends AppCompatActivity {
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 registerVM.register(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString(),passwordRepeatEditText.getText().toString());
+                        passwordEditText.getText().toString(), passwordRepeatEditText.getText().toString());
                 Log.d("LG", "press button");
             }
         });

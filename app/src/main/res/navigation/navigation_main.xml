@@ -17,4 +17,10 @@
         android:label="@string/key"
         tools:layout="@layout/fragment_key" />
 
+    <fragment
+        android:id="@+id/bottom_nav_file"
+        android:name="com.coel.codyn.fragment.file.FragmentFile"
+        android:label="@string/file"
+        tools:layout="@layout/fragment_file" />
+
 </navigation>

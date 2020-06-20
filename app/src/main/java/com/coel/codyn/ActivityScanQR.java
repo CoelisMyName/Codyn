@@ -34,16 +34,16 @@ public class ActivityScanQR extends AppCompatActivity implements ZXingScannerVie
         Intent data = new Intent();
         data.putExtra(EXTRA_QR_STRING, result.getText());
         setResult(Activity.RESULT_OK, data);
-        Log.d("handleResult",result.getText());
+        Log.d("handleResult", result.getText());
         finish();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == CAMERA_PERMISSION_REQUEST){
-            for(int i:grantResults){
-                if (i != PackageManager.PERMISSION_GRANTED){
+        if (requestCode == CAMERA_PERMISSION_REQUEST) {
+            for (int i : grantResults) {
+                if (i != PackageManager.PERMISSION_GRANTED) {
                     finish();
                     return;
                 }
@@ -67,7 +67,7 @@ public class ActivityScanQR extends AppCompatActivity implements ZXingScannerVie
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
                     CAMERA_PERMISSION_REQUEST);
-        }else {
+        } else {
             scannerView.setResultHandler(this);
             scannerView.startCamera();
         }

@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="10dp"
-    android:layout_marginBottom="5dp"
-    app:cardElevation="10dp">
+    android:descendantFocusability="afterDescendants"
+    app:cardCornerRadius="5dp"
+    android:layout_marginBottom="2dp"
+    app:cardElevation="15dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,6 +23,7 @@
             android:text="AES加密"/>
 
         <TextView
+            android:id="@+id/key"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="密钥：nvsdnv"
@@ -48,7 +50,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@id/dest"
             android:text="加密中"/>
-        
+
         <TextView
             android:id="@+id/source"
             android:layout_width="0dp"

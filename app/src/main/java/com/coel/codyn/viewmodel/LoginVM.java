@@ -56,7 +56,7 @@ public class LoginVM extends AndroidViewModel {
 
     public void login(String username, String password) {
 
-        if(!isUserNameValid(username)||!isPasswordValid(password)){
+        if (!isUserNameValid(username) || !isPasswordValid(password)) {
             return;
         }
 
