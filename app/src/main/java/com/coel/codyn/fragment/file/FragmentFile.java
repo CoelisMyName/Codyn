@@ -109,7 +109,7 @@ public class FragmentFile extends Fragment {
         mainVM.getInfo().observe(getViewLifecycleOwner(), new Observer<Info>() {
             @Override
             public void onChanged(Info info) {
-                if (info != null) {
+                if (info != null && info.getTYPE() != Info.DEFAULT) {
                     builder.setAttr(info.getATTR());
                     builder.setType(info.getTYPE());
                     builder.setKey(info.getKey());

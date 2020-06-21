@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -54,6 +55,7 @@ public class ActivityMain extends AppCompatActivity {
     private TextView key_type;
     private TextView key;
     private TextView key_attr;
+    private ImageView imageView;
 
     private TextView user_name;
 
@@ -94,6 +96,7 @@ public class ActivityMain extends AppCompatActivity {
         key_type = findViewById(R.id.key_info_type);
         key = findViewById(R.id.key_info_key);
         key_attr = findViewById(R.id.key_info_attr);
+        imageView = findViewById(R.id.close);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout_main);//获得DrawerLayout实例
         NavigationView sideNavView = findViewById(R.id.side_nav_view_main);//获得侧边栏实例
@@ -118,17 +121,27 @@ public class ActivityMain extends AppCompatActivity {
         mainVM.getInfo().observe(this, new Observer<Info>() {
             @Override
             public void onChanged(Info info) {
-                if (info.getTYPE() == Info.DEFAULT) {
+                if(info != null){
+                    if (info.getTYPE() == Info.DEFAULT) {
+                        infoview.setVisibility(View.GONE);
+                    } else {
+                        infoview.setVisibility(View.VISIBLE);
+                        key_type.setText(KeyUtil.type2Str(info.getTYPE()));
+                        key_attr.setText(KeyUtil.attrStr(info.getATTR()));
+                        key.setText(Coder.Base64_encode2text(info.getKey()));
+                    }
+                }
+                else {
                     infoview.setVisibility(View.GONE);
-                } else {
-                    infoview.setVisibility(View.VISIBLE);
-                    key_type.setText(KeyUtil.type2Str(info.getTYPE()));
-                    key_attr.setText(KeyUtil.attrStr(info.getATTR()));
-                    key.setText(Coder.Base64_encode2text(info.getKey()));
                 }
             }
         });
-
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainVM.clearInfo();
+            }
+        });
         startActivityForResult(new Intent(this, ActivityLogin.class), LOGIN_REQUEST);
     }
 

@@ -33,6 +33,10 @@ public class MainVM extends AndroidViewModel {
         info.setValue(i);
     }
 
+    public void clearInfo(){
+        info.setValue(null);
+    }
+
     public LiveData<User> getUser() {
         return user;
     }
