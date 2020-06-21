@@ -39,8 +39,7 @@ public class FragmentFunction extends Fragment {
     private MainVM mainVM;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         functionVM = new ViewModelProvider(this).get(FunctionVM.class);//获得view model
         mainVM = new ViewModelProvider(requireActivity()).get(MainVM.class);
@@ -49,10 +48,8 @@ public class FragmentFunction extends Fragment {
 
         //初始化recycler view
         RecyclerView recyclerView = root.findViewById(R.id.recycler_function);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setFocusableInTouchMode(false);
-        recyclerView.setFocusable(false);
         recyclerView.setHasFixedSize(true);
 
         final FunctionPadAdapter adapter = new FunctionPadAdapter();
