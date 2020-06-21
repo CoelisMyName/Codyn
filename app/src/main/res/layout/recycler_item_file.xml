@@ -5,13 +5,14 @@
     android:layout_height="wrap_content"
     android:descendantFocusability="afterDescendants"
     app:cardCornerRadius="5dp"
-    android:layout_marginBottom="2dp"
-    app:cardElevation="15dp">
+    app:cardElevation="15dp"
+    android:layout_margin="15dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:layout_margin="10dp">
 
         <TextView
             android:id="@+id/type"

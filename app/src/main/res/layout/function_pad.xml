@@ -48,11 +48,12 @@
 
             <Button
                 android:id="@+id/btn_base64_enc"
-                android:layout_width="70dp"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:text="@string/encode"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="5dp"
+                android:textColor="#555555"
                 app:layout_constraintHorizontal_weight="2"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/btn_base64_dec"
@@ -61,10 +62,11 @@
 
             <Button
                 android:id="@+id/btn_base64_dec"
-                android:layout_width="70dp"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:textColor="#555555"
                 android:text="@string/decode"
                 app:layout_constraintHorizontal_weight="2"
                 app:layout_constraintLeft_toRightOf="@id/btn_base64_enc"
@@ -75,10 +77,11 @@
 
             <Button
                 android:id="@+id/btn_base64_dec2reg"
-                android:layout_width="120dp"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
+                android:textColor="#555555"
                 android:text="解码至寄存"
                 app:layout_constraintHorizontal_weight="5"
                 app:layout_constraintLeft_toRightOf="@id/btn_base64_dec"
@@ -97,43 +100,47 @@
 
             <Button
                 android:id="@+id/btn_txt_sha256"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
+                android:textColor="#555555"
+                android:background="@drawable/star_button_select"
                 android:text="@string/SHA256"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tag_hash"
-                android:background="@drawable/star_button_select"/>
+                app:layout_constraintTop_toBottomOf="@id/tag_hash" />
 
             <TextView
                 android:id="@+id/tag_crypto"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:layout_marginTop="15dp"
+                android:textColor="#555555"
                 android:gravity="center"
                 android:text="密码学"
                 app:layout_constraintTop_toBottomOf="@id/btn_txt_sha256" />
 
             <Button
                 android:id="@+id/btn_txt_enc"
-                android:layout_width="155dp"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="5dp"
+                android:textColor="#555555"
+                android:background="@drawable/star_button_select"
                 android:text="@string/encrypt"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/btn_txt_dec"
-                app:layout_constraintTop_toBottomOf="@id/tag_crypto"
-                android:background="@drawable/star_button_select"/>
+                app:layout_constraintTop_toBottomOf="@id/tag_crypto" />
 
             <Button
                 android:id="@+id/btn_txt_dec"
-                android:layout_width="155dp"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="25dp"
+                android:textColor="#555555"
                 android:text="@string/decrypt"
                 app:layout_constraintLeft_toRightOf="@id/btn_txt_enc"
                 app:layout_constraintRight_toRightOf="parent"
@@ -191,15 +198,16 @@
 
             <Button
                 android:id="@+id/btn_bin_sha256"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
+                android:textColor="#555555"
+                android:background="@drawable/star_button_select"
                 android:text="@string/SHA256"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tag_bin_hash"
-                android:background="@drawable/star_button_select"/>
+                app:layout_constraintTop_toBottomOf="@id/tag_bin_hash" />
 
             <TextView
                 android:id="@+id/tag_bin_crypto"
@@ -212,11 +220,12 @@
 
             <Button
                 android:id="@+id/btn_bin_enc"
-                android:layout_width="155dp"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="5dp"
                 android:text="@string/encrypt"
+                android:textColor="#555555"
                 android:background="@drawable/star_button_select"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/btn_bin_dec"
@@ -224,11 +233,12 @@
 
             <Button
                 android:id="@+id/btn_bin_dec"
-                android:layout_width="155dp"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="25dp"
                 android:text="@string/decrypt"
+                android:textColor="#555555"
                 android:background="@drawable/star_button_select"
                 app:layout_constraintLeft_toRightOf="@id/btn_bin_enc"
                 app:layout_constraintRight_toRightOf="parent"
