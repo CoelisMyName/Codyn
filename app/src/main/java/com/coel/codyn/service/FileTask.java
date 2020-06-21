@@ -23,7 +23,6 @@ public class FileTask implements TaskControl, FileCryptoView {
     public final static int MAX = 10000;
     private final AtomicInteger stat = new AtomicInteger(WAITING);
     private final long size;
-    Handler handler;
     private int id = FileTaskRepository.getID();
     private int progress = 0;
     private long index = 0;
@@ -61,10 +60,6 @@ public class FileTask implements TaskControl, FileCryptoView {
         streamCrypto.setCipherOutputStream(cos);
     }
 
-    public void setHandler(Handler handler) {
-        this.handler = handler;
-    }
-
     //工作内容
     @Override
     public void run() {
@@ -88,9 +83,6 @@ public class FileTask implements TaskControl, FileCryptoView {
             try {
                 index += streamCrypto.doCrypto();
                 progress = (int) ((index * MAX) / size);
-                if (handler != null) {
-                    handler.sendEmptyMessage(1);
-                }
                 if (progress == MAX) {
                     synchronized (stat) {
                         stat.set(FINISHED);
@@ -104,7 +96,6 @@ public class FileTask implements TaskControl, FileCryptoView {
             }
         }
         if (temp == CANCELED || temp == ERROR || temp == FINISHED) {
-            handler.sendEmptyMessage(1);
             streamCrypto.clearBuffer();
             if (!BufferProvider.getInstance().putBuffer(buffer)) {
                 new Exception("can't put buffer into BufferProvider").printStackTrace();

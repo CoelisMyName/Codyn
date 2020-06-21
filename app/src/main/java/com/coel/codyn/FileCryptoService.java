@@ -17,15 +17,20 @@ import com.coel.codyn.service.FileCryptoView;
 import com.coel.codyn.service.FileTask;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class FileCryptoService extends Service {
-    public Handler handler = new Handler(new Handler.Callback() {
+    private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
             repository.invalidate();
             return false;
         }
     });
+
+    private Timer timer = new Timer();;
+    private MyTimerTask mTask = new MyTimerTask(handler);
 
     private FileTaskRepository repository;
     private CryptoBinder binder = new CryptoBinder();
@@ -41,6 +46,7 @@ public class FileCryptoService extends Service {
         super.onCreate();
         Log.d("service", "onCreate: ");
         repository = FileTaskRepository.getInstance();
+        timer.schedule(mTask,0,50);
     }
 
     @Override
@@ -52,6 +58,8 @@ public class FileCryptoService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d("service", "onDestroy: ");
+        timer.cancel();
+        mTask.cancel();
         handler.removeCallbacksAndMessages(null);
     }
 
@@ -59,14 +67,25 @@ public class FileCryptoService extends Service {
         //加解密请求
 
         public void submit(FileTask ft, int r) {
-            if (r == FileTaskRepository.START) {
-                ft.setHandler(handler);
-            }
             repository.submit(ft, r);
         }
 
         public LiveData<List<FileCryptoView>> getDisplay() {
             return repository.getDisplay();
         }
+    }
+
+    class MyTimerTask extends TimerTask {
+        Handler handler;
+
+        public MyTimerTask(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public void run() {
+            handler.sendEmptyMessage(1);
+        }
+
     }
 }

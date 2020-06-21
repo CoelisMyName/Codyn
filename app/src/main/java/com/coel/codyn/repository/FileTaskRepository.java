@@ -25,7 +25,7 @@ public class FileTaskRepository {
 
     private final List<FileTask> pausingList = new Vector<>(10);
     private final List<FileCryptoView> fileCryptoViews = new Vector<>(10);
-    private MutableLiveData<List<FileCryptoView>> display;
+    private MutableLiveData<List<FileCryptoView>> display = new MutableLiveData<>();
 
     public static FileTaskRepository getInstance() {
         if (repository == null)
@@ -80,6 +80,12 @@ public class FileTaskRepository {
                 throw new IllegalStateException("Unexpected value: " + s);
         }
         invalidate();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        service.shutdown();
     }
 
     public LiveData<List<FileCryptoView>> getDisplay() {

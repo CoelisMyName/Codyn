@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,10 @@ import com.coel.codyn.viewmodel.MainVM;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +50,7 @@ import javax.crypto.Cipher;
 
 public class FragmentFile extends Fragment {
     public static final int OPEN_FILE_REQUEST = 1;
-    public static final int EXTERNAL_STORAGE_PERMISSION_REQUEST = 0;
+    public static final int EXTERNAL_STORAGE_PERMISSION_REQUEST = 1;
     private MainVM mainVM;
     private FileVM fileVM;
     private FileTaskBuilder builder;
@@ -86,7 +91,7 @@ public class FragmentFile extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (builder.isReady()) {
+                if (!builder.isReady()) {
                     ViewUtil.showToast(requireContext(), "你还没选择密钥");
                 } else {
                     permissionForFile();
@@ -173,7 +178,7 @@ public class FragmentFile extends Fragment {
 
     private void openFile() throws SecurityException {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("file/*");
+        intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(intent, OPEN_FILE_REQUEST);
     }
@@ -182,10 +187,25 @@ public class FragmentFile extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OPEN_FILE_REQUEST && resultCode == Activity.RESULT_OK) {
+            Log.d("file", "onActivityResult: pick file");
             assert data != null;
+            Log.d("file", "onActivityResult: data != null");
             Uri uri = data.getData();
             assert uri != null;
-            if ("file".equalsIgnoreCase(uri.getScheme())) {
+            Log.d("file", "onActivityResult: uri != null");
+            Log.d("file", "onActivityResult: " + uri.getScheme());
+            Log.d("file", "onActivityResult: " + uri.toString());
+
+            try {
+                InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+                Log.d("file", "onActivityResult: " + inputStream.toString());
+                File file = new File(uri.getPath());
+                Log.d("file", "onActivityResult: " + file.isFile() + " " + file.getName() + " " + file.getAbsolutePath() + " " + file.getCanonicalPath());
+                new FileInputStream("/storage/emulated/0/Download/.cu/.log/tql.data");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if ("content00".equalsIgnoreCase(uri.getScheme())) {
                 String path = uri.getPath();
                 assert path != null;
                 File file = new File(path);
@@ -221,7 +241,6 @@ public class FragmentFile extends Fragment {
                     }
                 });
                 dialog.show(requireActivity().getSupportFragmentManager(), "文件任务");
-
             }
         }
     }
