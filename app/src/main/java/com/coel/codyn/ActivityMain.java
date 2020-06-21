@@ -188,7 +188,7 @@ public class ActivityMain extends AppCompatActivity {
             });
             //启动服务
             Intent intent = new Intent(this, FileCryptoService.class);
-            startForegroundService(intent);
+            startService(intent);
             return;
         }
         if (requestCode == SCAN_QR_REQUEST && resultCode == RESULT_OK && data.hasExtra(ActivityScanQR.EXTRA_QR_STRING)) {
