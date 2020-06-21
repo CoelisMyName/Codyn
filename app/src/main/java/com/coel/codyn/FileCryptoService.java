@@ -6,6 +6,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,7 @@ public class FileCryptoService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("service", "onCreate: ");
         repository = FileTaskRepository.getInstance();
     }
 
@@ -49,6 +51,7 @@ public class FileCryptoService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("service", "onDestroy: ");
         handler.removeCallbacksAndMessages(null);
     }
 

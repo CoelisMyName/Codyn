@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.coel.codyn.FileCryptoService;
@@ -54,11 +55,14 @@ public class FragmentFile extends Fragment {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             binder = (FileCryptoService.CryptoBinder) service;
+            Log.d("binder", "onServiceConnected: binder");
+            fileVM.setFcvListLiveData(binder.getDisplay());
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             binder = null;
+            Log.d("binder", "onServiceConnected: binder set null");
         }
     };
 
@@ -70,12 +74,12 @@ public class FragmentFile extends Fragment {
         mainVM = new ViewModelProvider(requireActivity()).get(MainVM.class);
         builder = new FileTaskBuilder();
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
         FileViewAdapter adapter = new FileViewAdapter();
 
         Intent intent = new Intent(requireActivity(), FileCryptoService.class);
         requireActivity().bindService(intent, conn, Context.BIND_AUTO_CREATE);
-
-        fileVM.setFcvListLiveData(binder.getDisplay());
 
         FloatingActionButton fab = root.findViewById(R.id.floatingActionButton);
 
