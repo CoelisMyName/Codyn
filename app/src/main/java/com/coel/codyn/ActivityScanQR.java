@@ -62,7 +62,6 @@ public class ActivityScanQR extends AppCompatActivity implements ZXingScannerVie
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        scannerView.startCamera();
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
