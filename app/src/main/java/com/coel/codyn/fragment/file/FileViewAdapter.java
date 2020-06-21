@@ -1,5 +1,6 @@
 package com.coel.codyn.fragment.file;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.coel.codyn.R;
 import com.coel.codyn.appUtil.cypherUtil.KeyUtil;
 import com.coel.codyn.repository.FileTaskRepository;
+import com.coel.codyn.room.Key;
 import com.coel.codyn.service.FileCryptoView;
 import com.coel.codyn.service.FileTask;
 import com.coel.codyn.service.TaskView;
@@ -25,17 +27,20 @@ public class FileViewAdapter extends ListAdapter<FileCryptoView, FileViewAdapter
 
         @Override
         public boolean areItemsTheSame(@NonNull FileCryptoView oldItem, @NonNull FileCryptoView newItem) {
+            Log.d("fileView", "areItemsTheSame: ");
             return oldItem.getId() == newItem.getId();
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull FileCryptoView oldItem, @NonNull FileCryptoView newItem) {
+            Log.d("fileView", "areContentsTheSame: ");
             return oldItem.getAttr() == newItem.getAttr() &&
                     oldItem.getMode() == newItem.getMode() &&
                     oldItem.getType() == newItem.getType() &&
                     oldItem.getKey().equals(newItem.getKey()) &&
                     oldItem.getDest().equals(newItem.getDest()) &&
                     oldItem.getSource().equals(newItem.getSource());
+
         }
     };
     private FileViewListener listener;
@@ -49,6 +54,7 @@ public class FileViewAdapter extends ListAdapter<FileCryptoView, FileViewAdapter
     public FileViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_item_file, parent, false);
+        Log.d("fileView", "onCreateViewHolder: ");
         return new FileViewHolder(itemView);
     }
 
@@ -94,11 +100,15 @@ public class FileViewAdapter extends ListAdapter<FileCryptoView, FileViewAdapter
                 break;
             default:
         }
-
+        Log.d("fileView", "onBindViewHolder: ");
     }
 
     public void setListener(FileViewListener listener) {
         this.listener = listener;
+    }
+
+    public FileCryptoView getFileTask(int i) {
+        return getItem(i);
     }
 
     public interface FileViewListener {
@@ -134,6 +144,7 @@ public class FileViewAdapter extends ListAdapter<FileCryptoView, FileViewAdapter
                     }
                 }
             });
+            Log.d("fileView", "FileViewHolder: ");
         }
     }
 }

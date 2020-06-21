@@ -1,5 +1,7 @@
 package com.coel.codyn.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -39,6 +41,7 @@ public class FileTaskRepository {
 
     public void invalidate() {
         display.setValue(fileCryptoViews);
+        Log.d("taskSize", "invalidate: " + fileCryptoViews.size());
     }
 
     //主线程调用
@@ -50,6 +53,7 @@ public class FileTaskRepository {
                     fileCryptoViews.add(f);
                 }
                 service.submit(f);
+                Log.d("task", "submit: START");
                 break;
 
             case PAUSE:
@@ -58,6 +62,7 @@ public class FileTaskRepository {
                         pausingList.add(f);
                     }
                 }
+                Log.d("task", "submit: PAUSE");
                 break;
 
             case RESUME:
@@ -65,15 +70,18 @@ public class FileTaskRepository {
                     pausingList.remove(f);
                     service.submit(f);
                 }
+                Log.d("task", "submit: RESUME");
                 break;
 
             case CANCEL:
                 f.taskCancel();
+                Log.d("task", "submit: CANCEL");
                 break;
 
             case REMOVE:
                 f.taskCancel();
                 fileCryptoViews.remove(f);
+                Log.d("task", "submit: REMOVE");
                 break;
 
             default:

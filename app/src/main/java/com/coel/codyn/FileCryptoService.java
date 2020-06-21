@@ -21,18 +21,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class FileCryptoService extends Service {
+    private Timer timer = new Timer();
+    private FileTaskRepository repository;
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
             repository.invalidate();
+            Log.d("refresh", "handleMessage: repository.invalidate()");
             return false;
         }
     });
-
-    private Timer timer = new Timer();;
     private MyTimerTask mTask = new MyTimerTask(handler);
-
-    private FileTaskRepository repository;
     private CryptoBinder binder = new CryptoBinder();
 
     @Nullable
@@ -46,7 +45,7 @@ public class FileCryptoService extends Service {
         super.onCreate();
         Log.d("service", "onCreate: ");
         repository = FileTaskRepository.getInstance();
-        timer.schedule(mTask,0,50);
+        timer.schedule(mTask, 0, 50);
     }
 
     @Override
@@ -67,6 +66,7 @@ public class FileCryptoService extends Service {
         //加解密请求
 
         public void submit(FileTask ft, int r) {
+            Log.d("task", "submit: task" + r);
             repository.submit(ft, r);
         }
 

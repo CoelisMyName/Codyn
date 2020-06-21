@@ -1,7 +1,5 @@
 package com.coel.codyn.service;
 
-import android.os.Handler;
-
 import androidx.annotation.NonNull;
 
 import com.coel.codyn.appUtil.cypherUtil.Coder;
@@ -38,6 +36,8 @@ public class FileTask implements TaskControl, FileCryptoView {
     private FileInputStream fis;
     private FileOutputStream fos;
     private CipherOutputStream cos;
+    private String sourceName;
+    private String destName;
 
     //为了安全，限制在100M以内吧
     public FileTask(String source, String dest, int type, int attr, byte[] key, int mode) throws Exception {
@@ -48,8 +48,11 @@ public class FileTask implements TaskControl, FileCryptoView {
         this.mode = mode;
         this.key = key;
         File sf = new File(source);
+        File desf = new File(dest);
+        sourceName = sf.getName();
+        destName = desf.getName();
         fis = new FileInputStream(sf);
-        fos = new FileOutputStream(dest);
+        fos = new FileOutputStream(desf);
         size = sf.length();
         streamCrypto.setInputStream(new BufferedInputStream(fis));
 
@@ -169,12 +172,12 @@ public class FileTask implements TaskControl, FileCryptoView {
     //以下是活动View来源
     @Override
     public String getSource() {
-        return source;
+        return sourceName;
     }
 
     @Override
     public String getDest() {
-        return dest;
+        return destName;
     }
 
     @Override

@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.coel.codyn.R;
@@ -34,7 +37,21 @@ public class FileDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.dialogfragment, container, false);
+        final TextView typeTxt = root.findViewById(R.id.type);
+        final TextView modeTxt = root.findViewById(R.id.mode);
+        final TextView keyTxt = root.findViewById(R.id.key);
+        final TextView sourceTxt = root.findViewById(R.id.source);
+
         fileVM = new ViewModelProvider(this).get(FileVM.class);
+        fileVM.getFileTaskBuilderLiveData().observe(getViewLifecycleOwner(), new Observer<FileTaskBuilder>() {
+            @Override
+            public void onChanged(FileTaskBuilder fileTaskBuilder) {
+                typeTxt.setText(fileTaskBuilder.getType());
+                modeTxt.setText(fileTaskBuilder.getMode());
+                keyTxt.setText(fileTaskBuilder.getKey());
+                sourceTxt.setText(fileTaskBuilder.getSource());
+            }
+        });
         return root;
     }
 

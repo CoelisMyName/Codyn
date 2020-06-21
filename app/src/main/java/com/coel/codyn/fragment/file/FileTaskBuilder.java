@@ -87,7 +87,7 @@ public class FileTaskBuilder {
     }
 
     public FileTask build() throws Exception {
-        if (key == null || type == -1 || dest == null) {
+        if (key == null || type == -1 || dest == null || mode == -1) {
             return null;
         }
         FileTask fileTask = new FileTask(source, dest, type, attr, key, mode);

@@ -25,40 +25,40 @@
                 android:id="@+id/editText"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_margin="15dp"
+                android:background="@drawable/bg_edittext_selector"
                 android:ems="10"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
-                android:text="请输入内容"
-                app:layout_constraintTop_toTopOf="parent"
-                tool:ignore="Autofill,LabelFor"
-                android:background="@drawable/bg_edittext_selector"
                 android:paddingLeft="10dp"
                 android:paddingTop="5dp"
-                android:layout_margin="15dp"
-                android:textColor="#555555"/>
+                android:text="请输入内容"
+                android:textColor="#555555"
+                app:layout_constraintTop_toTopOf="parent"
+                tool:ignore="Autofill,LabelFor" />
 
             <TextView
                 android:id="@+id/tag_base64"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:layout_marginTop="15dp"
-                android:text="Base64"
                 android:gravity="center"
+                android:text="Base64"
                 app:layout_constraintTop_toBottomOf="@id/editText" />
 
             <Button
                 android:id="@+id/btn_base64_enc"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:text="@string/encode"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="5dp"
+                android:background="@drawable/star_button_select"
+                android:text="@string/encode"
                 android:textColor="#555555"
                 app:layout_constraintHorizontal_weight="2"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/btn_base64_dec"
-                app:layout_constraintTop_toBottomOf="@id/tag_base64"
-                android:background="@drawable/star_button_select"/>
+                app:layout_constraintTop_toBottomOf="@id/tag_base64" />
 
             <Button
                 android:id="@+id/btn_base64_dec"
@@ -66,14 +66,13 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:textColor="#555555"
+                android:background="@drawable/star_button_select"
                 android:text="@string/decode"
+                android:textColor="#555555"
                 app:layout_constraintHorizontal_weight="2"
                 app:layout_constraintLeft_toRightOf="@id/btn_base64_enc"
                 app:layout_constraintRight_toLeftOf="@id/btn_base64_dec2reg"
-                app:layout_constraintTop_toBottomOf="@id/tag_base64"
-                android:background="@drawable/star_button_select"
-                />
+                app:layout_constraintTop_toBottomOf="@id/tag_base64" />
 
             <Button
                 android:id="@+id/btn_base64_dec2reg"
@@ -81,13 +80,13 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
-                android:textColor="#555555"
+                android:background="@drawable/star_button_select"
                 android:text="解码至寄存"
+                android:textColor="#555555"
                 app:layout_constraintHorizontal_weight="5"
                 app:layout_constraintLeft_toRightOf="@id/btn_base64_dec"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tag_base64"
-                android:background="@drawable/star_button_select"/>
+                app:layout_constraintTop_toBottomOf="@id/tag_base64" />
 
             <TextView
                 android:id="@+id/tag_hash"
@@ -104,9 +103,9 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
-                android:textColor="#555555"
                 android:background="@drawable/star_button_select"
                 android:text="@string/SHA256"
+                android:textColor="#555555"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tag_hash" />
@@ -116,9 +115,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:layout_marginTop="15dp"
-                android:textColor="#555555"
                 android:gravity="center"
                 android:text="密码学"
+                android:textColor="#555555"
                 app:layout_constraintTop_toBottomOf="@id/btn_txt_sha256" />
 
             <Button
@@ -127,9 +126,9 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="5dp"
-                android:textColor="#555555"
                 android:background="@drawable/star_button_select"
                 android:text="@string/encrypt"
+                android:textColor="#555555"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/btn_txt_dec"
                 app:layout_constraintTop_toBottomOf="@id/tag_crypto" />
@@ -140,12 +139,12 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="25dp"
-                android:textColor="#555555"
+                android:background="@drawable/star_button_select"
                 android:text="@string/decrypt"
+                android:textColor="#555555"
                 app:layout_constraintLeft_toRightOf="@id/btn_txt_enc"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tag_crypto"
-                android:background="@drawable/star_button_select"/>
+                app:layout_constraintTop_toBottomOf="@id/tag_crypto" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -163,9 +162,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:layout_marginBottom="10dp"
-            >
+            android:padding="5dp">
 
             <TextView
                 android:id="@+id/tag_reg"
@@ -181,9 +179,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:paddingLeft="10dp"
                 android:text="二进制16进制内容二"
                 android:textSize="10sp"
-                android:paddingLeft="10dp"
                 app:layout_constraintTop_toBottomOf="@id/tag_reg"
                 tool:ignore="SmallSp" />
 
@@ -202,9 +200,9 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
-                android:textColor="#555555"
                 android:background="@drawable/star_button_select"
                 android:text="@string/SHA256"
+                android:textColor="#555555"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tag_bin_hash" />
@@ -224,9 +222,9 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="5dp"
+                android:background="@drawable/star_button_select"
                 android:text="@string/encrypt"
                 android:textColor="#555555"
-                android:background="@drawable/star_button_select"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/btn_bin_dec"
                 app:layout_constraintTop_toBottomOf="@id/tag_bin_crypto" />
@@ -237,9 +235,9 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="25dp"
+                android:background="@drawable/star_button_select"
                 android:text="@string/decrypt"
                 android:textColor="#555555"
-                android:background="@drawable/star_button_select"
                 app:layout_constraintLeft_toRightOf="@id/btn_bin_enc"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tag_bin_crypto" />
@@ -259,9 +257,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical"
-            android:padding="5dp"
-            android:layout_marginBottom="10dp">
+            android:padding="5dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -274,8 +272,8 @@
                 android:id="@+id/txt_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
                 android:clickable="true"
+                android:paddingLeft="10dp"
                 tool:text="输出base64" />
 
         </LinearLayout>

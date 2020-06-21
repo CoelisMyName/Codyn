@@ -26,7 +26,7 @@ public class FileVM extends ViewModel {
         this.fcvListLiveData = fcvListLiveData;
     }
 
-    public MutableLiveData<FileTaskBuilder> getFileTaskBuilderLiveData() {
+    public LiveData<FileTaskBuilder> getFileTaskBuilderLiveData() {
         return fileTaskBuilderLiveData;
     }
 

@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.coel.codyn.FileCryptoService;
 import com.coel.codyn.R;
 import com.coel.codyn.activitydata.main.Info;
+import com.coel.codyn.appUtil.FileUtils;
 import com.coel.codyn.appUtil.SystemUtil;
 import com.coel.codyn.appUtil.ViewUtil;
 import com.coel.codyn.repository.FileTaskRepository;
@@ -39,10 +39,6 @@ import com.coel.codyn.viewmodel.MainVM;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,13 +51,15 @@ public class FragmentFile extends Fragment {
     private FileVM fileVM;
     private FileTaskBuilder builder;
     private FileCryptoService.CryptoBinder binder;
+    private FileViewAdapter adapter = new FileViewAdapter();
     private ServiceConnection conn = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             binder = (FileCryptoService.CryptoBinder) service;
             Log.d("binder", "onServiceConnected: binder");
-            fileVM.setFcvListLiveData(binder.getDisplay());
+            showList();
+
         }
 
         @Override
@@ -70,6 +68,17 @@ public class FragmentFile extends Fragment {
             Log.d("binder", "onServiceConnected: binder set null");
         }
     };
+
+    public void showList(){
+        fileVM.setFcvListLiveData(binder.getDisplay());
+        fileVM.getFcvListLiveData().observe(this, new Observer<List<FileCryptoView>>() {
+            @Override
+            public void onChanged(List<FileCryptoView> fileCryptoViews) {
+                adapter.submitList(fileCryptoViews);
+            }
+        });
+        Log.d("binder", "onServiceConnected: submitList");
+    }
 
     @Nullable
     @Override
@@ -81,7 +90,6 @@ public class FragmentFile extends Fragment {
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
-        FileViewAdapter adapter = new FileViewAdapter();
 
         Intent intent = new Intent(requireActivity(), FileCryptoService.class);
         requireActivity().bindService(intent, conn, Context.BIND_AUTO_CREATE);
@@ -111,17 +119,12 @@ public class FragmentFile extends Fragment {
                 fileVM.setFileTaskBuilderLiveData(builder);
             }
         });
-        fileVM.getFcvListLiveData().observe(getViewLifecycleOwner(), new Observer<List<FileCryptoView>>() {
-            @Override
-            public void onChanged(List<FileCryptoView> fileCryptoViews) {
-                adapter.submitList(fileCryptoViews);
-            }
-        });
+
         adapter.setListener(new FileViewAdapter.FileViewListener() {
             @Override
             public void submit(FileCryptoView fileCryptoView, int s) {
-                if(binder != null){
-                    binder.submit((FileTask) fileCryptoView,s);
+                if (binder != null) {
+                    binder.submit((FileTask) fileCryptoView, s);
                 }
             }
         });
@@ -187,61 +190,44 @@ public class FragmentFile extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OPEN_FILE_REQUEST && resultCode == Activity.RESULT_OK) {
-            Log.d("file", "onActivityResult: pick file");
-            assert data != null;
-            Log.d("file", "onActivityResult: data != null");
             Uri uri = data.getData();
-            assert uri != null;
-            Log.d("file", "onActivityResult: uri != null");
-            Log.d("file", "onActivityResult: " + uri.getScheme());
-            Log.d("file", "onActivityResult: " + uri.toString());
 
-            try {
-                InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
-                Log.d("file", "onActivityResult: " + inputStream.toString());
-                File file = new File(uri.getPath());
-                Log.d("file", "onActivityResult: " + file.isFile() + " " + file.getName() + " " + file.getAbsolutePath() + " " + file.getCanonicalPath());
-                new FileInputStream("/storage/emulated/0/Download/.cu/.log/tql.data");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if ("content00".equalsIgnoreCase(uri.getScheme())) {
-                String path = uri.getPath();
-                assert path != null;
-                File file = new File(path);
-                Log.d("open file", "onActivityResult: " + path);
-                builder.setSource(path);
-                FileDialogFragment dialog = FileDialogFragment.newInstance("新文件任务");
+            Log.d("file", "onActivityResult: " + FileUtils.getPath(requireContext(), uri));
+            String path = FileUtils.getPath(requireContext(), uri);
+            File file = new File(path);
+            Log.d("open file", "onActivityResult: " + path);
+            builder.setSource(path);
+            FileDialogFragment dialog = FileDialogFragment.newInstance("新文件任务");
 
-                dialog.setListener(new FileDialogFragment.DialogListener() {
-                    @Override
-                    public void setMode(int i) {
-                        Log.d("openfile", "setMode: " + SystemUtil.getExternalFilesDir(requireContext()) + "/" + file.getName());
-                        if (i == Cipher.ENCRYPT_MODE) {
-                            builder.setDest(SystemUtil.getExternalFilesDir(requireContext()) + "/" + file.getName() + ".encrypt");
-                        } else if (i == Cipher.DECRYPT_MODE) {
-                            builder.setDest(SystemUtil.getExternalFilesDir(requireContext()) + "/" + file.getName() + ".decrypt");
-                        }
-                        try {
-                            FileTask fileTask = builder.build();
-                            if (fileTask == null) {
-                                ViewUtil.showToast(requireContext(), "创建任务失败");
-                            } else {
-                                if (binder != null) {
-                                    binder.submit(fileTask, FileTaskRepository.START);
-                                    ViewUtil.showToast(requireContext(), "创建任务成功");
-                                } else {
-                                    ViewUtil.showToast(requireContext(), "创建任务失败");
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
+            dialog.setListener(new FileDialogFragment.DialogListener() {
+                @Override
+                public void setMode(int i) {
+                    Log.d("openfile", "setMode: " + SystemUtil.getExternalFilesDir(requireContext()) + "/" + file.getName());
+                    builder.setMode(i);
+                    if (i == Cipher.ENCRYPT_MODE) {
+                        builder.setDest(SystemUtil.getExternalFilesDir(requireContext()) + "/" + file.getName() + ".encrypt");
+                    } else if (i == Cipher.DECRYPT_MODE) {
+                        builder.setDest(SystemUtil.getExternalFilesDir(requireContext()) + "/" + file.getName() + ".decrypt");
                     }
-                });
-                dialog.show(requireActivity().getSupportFragmentManager(), "文件任务");
-            }
+                    try {
+                        FileTask fileTask = builder.build();
+                        if (fileTask == null) {
+                            ViewUtil.showToast(requireContext(), "创建任务失败");
+                        } else {
+                            if (binder != null) {
+                                binder.submit(fileTask, FileTaskRepository.START);
+                                ViewUtil.showToast(requireContext(), "创建任务成功");
+                            } else {
+                                ViewUtil.showToast(requireContext(), "创建任务失败");
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+            dialog.show(requireActivity().getSupportFragmentManager(), "文件任务");
         }
     }
 
